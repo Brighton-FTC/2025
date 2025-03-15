@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public class GrabberComponent {
     public static double LEFT_CLAW_TURN_AMOUNT = 1;
-    public static double RIGHT_CLAW_TURN_AMOUNT = 0.4;
+    public static double RIGHT_CLAW_TURN_AMOUNT = 0.45;
 
     public static double ROTATOR_TURN_AMOUNT = 1;
 

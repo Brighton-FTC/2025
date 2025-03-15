@@ -14,8 +14,10 @@ public class LinearSlideComponent{
     private PIDController controller = new PIDController(0, 0, 0);
     public static double kP = 0.003, kI = 0, kD = 0;
 
-    public static double UP_POSITION = 9500;
+    public static double UP_POSITION = 10_000;
     public static double DOWN_POSITION = 0;
+
+    public static double TOLERANCE = 100;
 
     public LinearSlideComponent(HardwareMap hardwareMap, String motorId){
         slideMotor = new Motor(hardwareMap, motorId);
@@ -23,6 +25,7 @@ public class LinearSlideComponent{
         // slideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         slideMotor.setRunMode(Motor.RunMode.VelocityControl);
         controller.setSetPoint(DOWN_POSITION);
+        controller.setTolerance(TOLERANCE);
     }
 
     /**
