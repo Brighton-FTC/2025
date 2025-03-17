@@ -1,8 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -15,8 +21,25 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 public class AutonomousGeneral extends LinearOpMode {
     protected MecanumDrive drive;
 
-    public static double basketX = 3; // suboptimal solution to drift
-    public static double basketY = 26;
+    public static double basket1X = 3;
+    public static double basket1Y = 26;
+    public static double basket1Tangent = Math.toRadians(180);
+    public static double basket1Heading = Math.toRadians(-157.5);
+
+    public static double basketToSpikeHeading = Math.toRadians(45);
+
+    public static double spikeX = 36;
+    public static double spikeY = 6;
+    public static double spikeTangent = Math.toRadians(-45);
+
+    // at the moment, error in the robot's odometry builds up over time and causes it to be a few inches off the second time it goes to the basket
+    // ideally would like to fix this, but this works for now
+    public static double basket2X = 3;
+    public static double basket2Y = 30;
+    public static double basket2Tangent = Math.toRadians(180);
+    public static double basket2Heading = Math.toRadians(-157.5);
+
+    public static double WAIT_TIME = 0.1; // for some reason the robot's actions are more consistent when you wait in between each one
 
     @Override
     public void runOpMode() {
@@ -25,40 +48,65 @@ public class AutonomousGeneral extends LinearOpMode {
         drive = new MecanumDrive(hardwareMap, initialPose);
 
         LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "linear_slide_motor");
-        GrabberComponent grabber = new GrabberComponent(hardwareMap, "left_claw_servo", "right_claw_servo", "rotator_servo");
 
-        Action autonomousAction = drive.actionBuilder(initialPose)
-                .splineTo(new Vector2d(12, basketY / 2), Math.PI / 2)
-                .waitSeconds(0.5)
-                .splineTo(new Vector2d(basketX, basketY), Math.PI)
+        GrabberComponent grabber = new GrabberComponent(hardwareMap, "left_claw_servo", "right_claw_servo", "rotator_servo");
+        grabber.grab();
+
+        Action startToBasket = drive.actionBuilder(initialPose)
+                .splineTo(new Vector2d(12, basket1Y / 2), Math.toRadians(90))
+                .waitSeconds(WAIT_TIME)
+                .splineTo(new Vector2d(basket1X, basket1Y), basket1Tangent)
+                .waitSeconds(WAIT_TIME)
+                .turnTo(basket1Heading)
                 .build();
+
+        Action basketToSpike1 = drive.actionBuilder(new Pose2d(basket1X, basket1Y, basket1Heading))
+                .turnTo(Math.toRadians(basketToSpikeHeading))
+                .waitSeconds(WAIT_TIME)
+                .splineTo(new Vector2d(spikeX, spikeY), spikeTangent)
+                .build();
+
+        Action spike1ToBasket = drive.actionBuilder(new Pose2d(spikeX, spikeY, spikeTangent))
+                .turnTo(Math.PI)
+                .waitSeconds(WAIT_TIME)
+                .splineTo(new Vector2d(basket2X, basket2Y), basket2Tangent)
+                .waitSeconds(WAIT_TIME)
+                .turnTo(basket2Heading)
+                .build();
+
+        Action scoreSample = new InstantAction(() -> {
+            linearSlide.up();
+
+            while (!linearSlide.atSetPoint() && !isStopRequested()) {
+                linearSlide.run();
+                sleep(20);
+            }
+
+            grabber.down(); // for some mystical reason the grabber won't rotate forwards unless this has been called first
+            sleep(20);
+            grabber.forward();
+            sleep(1500);
+
+            grabber.reset();
+            sleep(500);
+
+            grabber.down();
+
+            linearSlide.down();
+
+            while (!linearSlide.atSetPoint() && !isStopRequested()) {
+                linearSlide.run();
+                sleep(20);
+            }
+        });
 
         waitForStart();
 
-        Actions.runBlocking(autonomousAction);
-
-        linearSlide.up();
-
-        while (!linearSlide.atSetPoint() && !isStopRequested()) {
-            linearSlide.run();
-            sleep(20);
-        }
-
-        grabber.down(); // for some mystical reason the grabber won't rotate forwards unless this has been called first
-        sleep(20);
-        grabber.forward();
-        sleep(3000);
-
-        grabber.reset();
-        sleep(1000);
-
-        grabber.down();
-
-        linearSlide.down();
-
-        while (!linearSlide.atSetPoint() && !isStopRequested()) {
-            linearSlide.run();
-            sleep(20);
-        }
+        Actions.runBlocking(startToBasket);
+        Actions.runBlocking(scoreSample);
+        Actions.runBlocking(basketToSpike1);
+        Actions.runBlocking(spike1ToBasket);
+        Actions.runBlocking(new SequentialAction(new InstantAction(grabber::grab), new SleepAction(0.5)));
+        Actions.runBlocking(scoreSample);
     }
 }

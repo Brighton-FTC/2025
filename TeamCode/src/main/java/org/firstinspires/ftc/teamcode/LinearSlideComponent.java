@@ -17,7 +17,7 @@ public class LinearSlideComponent{
     public static double UP_POSITION = 10_000;
     public static double DOWN_POSITION = 0;
 
-    public static double TOLERANCE = 100;
+    public static double TOLERANCE = 50;
 
     public LinearSlideComponent(HardwareMap hardwareMap, String motorId){
         slideMotor = new Motor(hardwareMap, motorId);
