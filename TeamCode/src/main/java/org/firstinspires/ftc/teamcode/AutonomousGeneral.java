@@ -22,7 +22,7 @@ public class AutonomousGeneral extends LinearOpMode {
     protected MecanumDrive drive;
 
     public static double basket1X = 3;
-    public static double basket1Y = 26;
+    public static double basket1Y = 24;
     public static double basket1Tangent = Math.toRadians(180);
     public static double basket1Heading = Math.toRadians(-157.5);
 
@@ -69,8 +69,10 @@ public class AutonomousGeneral extends LinearOpMode {
         Action spike1ToBasket = drive.actionBuilder(new Pose2d(spikeX, spikeY, spikeTangent))
                 .turnTo(Math.PI)
                 .waitSeconds(WAIT_TIME)
+                .lineToX(basket2X)
+                .afterDisp(0, grabber::grab)
+                .waitSeconds(0.5)
                 .splineTo(new Vector2d(basket2X, basket2Y), basket2Tangent)
-                .waitSeconds(WAIT_TIME)
                 .turnTo(basket2Heading)
                 .build();
 
@@ -81,6 +83,7 @@ public class AutonomousGeneral extends LinearOpMode {
                 linearSlide.run();
                 sleep(20);
             }
+            linearSlide.getMotor().set(0);
 
             grabber.down(); // for some mystical reason the grabber won't rotate forwards unless this has been called first
             sleep(20);
@@ -98,6 +101,7 @@ public class AutonomousGeneral extends LinearOpMode {
                 linearSlide.run();
                 sleep(20);
             }
+            linearSlide.getMotor().set(0);
         });
 
         waitForStart();
@@ -106,7 +110,6 @@ public class AutonomousGeneral extends LinearOpMode {
         Actions.runBlocking(scoreSample);
         Actions.runBlocking(basketToSpike1);
         Actions.runBlocking(spike1ToBasket);
-        Actions.runBlocking(new SequentialAction(new InstantAction(grabber::grab), new SleepAction(0.5)));
         Actions.runBlocking(scoreSample);
     }
 }
