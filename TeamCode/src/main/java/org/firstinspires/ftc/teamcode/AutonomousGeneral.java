@@ -39,6 +39,12 @@ public class AutonomousGeneral extends LinearOpMode {
     public static double basket2Tangent = Math.toRadians(180);
     public static double basket2Heading = Math.toRadians(-157.5);
 
+    public static double basketToParkHeading = Math.toRadians(-135);
+
+    public static double parkX = 54;
+    public static double parkY = 6;
+    public static double parkTangent = Math.toRadians(0);
+
     public static double WAIT_TIME = 0.1; // for some reason the robot's actions are more consistent when you wait in between each one
 
     @Override
@@ -78,6 +84,13 @@ public class AutonomousGeneral extends LinearOpMode {
                 .turnTo(basket2Heading)
                 .build();
 
+        Action basketToPark = drive.actionBuilder(new Pose2d(basket2X, basket2Y, basket2Heading))
+                .turnTo(basketToParkHeading)
+                .waitSeconds(WAIT_TIME)
+                .setTangent(basketToParkHeading)
+                .splineTo(new Vector2d(parkX, parkY), parkTangent)
+                .build();
+
         Action scoreSample = new InstantAction(() -> {
             grabber.down(); // for some mystical reason the grabber won't rotate forwards unless this has been called first
             sleep(20);
@@ -88,7 +101,6 @@ public class AutonomousGeneral extends LinearOpMode {
             sleep(500);
 
             grabber.down();
-
             linearSlide.down();
         });
 
@@ -106,6 +118,7 @@ public class AutonomousGeneral extends LinearOpMode {
         Actions.runBlocking(basketToSpike1);
         Actions.runBlocking(spike1ToBasket);
         Actions.runBlocking(scoreSample);
+        Actions.runBlocking(basketToPark);
 
         while (!linearSlide.atSetPoint()) {
             sleep(20);
