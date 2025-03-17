@@ -53,6 +53,7 @@ public class AutonomousGeneral extends LinearOpMode {
         grabber.grab();
 
         Action startToBasket = drive.actionBuilder(initialPose)
+                .afterDisp(0, linearSlide::up)
                 .splineTo(new Vector2d(12, basket1Y / 2), Math.toRadians(90))
                 .waitSeconds(WAIT_TIME)
                 .splineTo(new Vector2d(basket1X, basket1Y), basket1Tangent)
@@ -72,19 +73,12 @@ public class AutonomousGeneral extends LinearOpMode {
                 .lineToX(basket2X)
                 .afterDisp(0, grabber::grab)
                 .waitSeconds(0.5)
+                .afterDisp(0, linearSlide::up)
                 .splineTo(new Vector2d(basket2X, basket2Y), basket2Tangent)
                 .turnTo(basket2Heading)
                 .build();
 
         Action scoreSample = new InstantAction(() -> {
-            linearSlide.up();
-
-            while (!linearSlide.atSetPoint() && !isStopRequested()) {
-                linearSlide.run();
-                sleep(20);
-            }
-            linearSlide.getMotor().set(0);
-
             grabber.down(); // for some mystical reason the grabber won't rotate forwards unless this has been called first
             sleep(20);
             grabber.forward();
@@ -96,20 +90,25 @@ public class AutonomousGeneral extends LinearOpMode {
             grabber.down();
 
             linearSlide.down();
-
-            while (!linearSlide.atSetPoint() && !isStopRequested()) {
-                linearSlide.run();
-                sleep(20);
-            }
-            linearSlide.getMotor().set(0);
         });
 
         waitForStart();
+
+        new Thread(() -> {
+            while (!isStopRequested()) {
+                linearSlide.run();
+                sleep(20);
+            }
+        }).start();
 
         Actions.runBlocking(startToBasket);
         Actions.runBlocking(scoreSample);
         Actions.runBlocking(basketToSpike1);
         Actions.runBlocking(spike1ToBasket);
         Actions.runBlocking(scoreSample);
+
+        while (!linearSlide.atSetPoint()) {
+            sleep(20);
+        }
     }
 }
