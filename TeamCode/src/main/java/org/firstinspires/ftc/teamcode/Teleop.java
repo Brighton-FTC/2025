@@ -31,7 +31,8 @@ public class Teleop extends OpMode {
 
     private boolean isFieldCentric = true;
 
-    private boolean isRunningPid = true;
+    private boolean isRunningSlidePid = true;
+    private boolean isRunningHeadingPid = true;
     private double inputMultiplier = 1;
 
     public static double kP = -0.035, kI = 0, kD = 0;
@@ -95,17 +96,17 @@ public class Teleop extends OpMode {
         // linear slide
         if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
             slide.up();
-            isRunningPid = true;
+            isRunningSlidePid = true;
         } else if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
             slide.down();
-            isRunningPid = true;
+            isRunningSlidePid = true;
 
         } else if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
                 - gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) != 0) {
-            isRunningPid = false;
+            isRunningSlidePid = false;
         }
 
-        if (isRunningPid) {
+        if (isRunningSlidePid) {
             slide.run();
         } else {
             slide.getMotor().set(gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
@@ -123,7 +124,7 @@ public class Teleop extends OpMode {
             inputMultiplier = inputMultiplier == 1 ? SLOW_MODE_SPEED : 1;
         }
 
-        if (Math.abs(gamepad.getRightX()) > TURN_THRESHOLD && !gamepad.isDown(GamepadKeys.Button.RIGHT_STICK_BUTTON)) {
+        if (Math.abs(gamepad.getRightX()) > TURN_THRESHOLD || !isRunningHeadingPid) {
             if (isFieldCentric) {
                 drive.driveFieldCentric(gamepad.getLeftX() * inputMultiplier,
                         gamepad.getLeftY() * inputMultiplier,
@@ -153,8 +154,21 @@ public class Teleop extends OpMode {
         }
 
         // gamepad override
+        /*
         if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || gamepad2Ex.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
             gamepad = gamepad == gamepad1Ex ? gamepad2Ex : gamepad1Ex; // switch control
+        }
+        */
+
+        // prepare for hang (disable heading PID and rotator servo)
+        if (gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER) && gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
+            if (isRunningHeadingPid) {
+                grabber.getRotatorServo().getController().pwmDisable();
+                isRunningHeadingPid = false;
+            } else {
+                grabber.getRotatorServo().getController().pwmEnable();
+                isRunningHeadingPid = true;
+            }
         }
 
         telemetry.addData("Control", gamepad == gamepad1Ex ? "Gamepad 1" : "Gamepad 2");
@@ -166,6 +180,7 @@ public class Teleop extends OpMode {
         }
         telemetry.addData("Heading", yaw);
         telemetry.addData("Target Heading", headingController.getSetPoint());
+        telemetry.addLine("Heading PID " + (isRunningHeadingPid ? "Enabled" : "Disabled"));
         telemetry.addLine();
 
         telemetry.addData("Slide Position", slide.getMotor().getCurrentPosition());

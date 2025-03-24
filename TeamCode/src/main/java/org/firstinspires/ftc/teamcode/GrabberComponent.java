@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 @Config
@@ -11,19 +10,18 @@ public class GrabberComponent {
     public static double LEFT_CLAW_TURN_AMOUNT = 1;
     public static double RIGHT_CLAW_TURN_AMOUNT = 0.4;
 
-    public static double ROTATOR_TURN_AMOUNT = 1;
+    public static double ROTATOR_TURN_AMOUNT = 0.9;
 
-    private final ServoEx leftClaw, rightClaw, rotator;
+    private final Servo leftClaw, rightClaw, rotator;
 
 
     public GrabberComponent(HardwareMap hardwareMap, String leftId, String rightId, String rotatorId) {
-        leftClaw = new SimpleServo(hardwareMap, leftId, 0, 360);
-        rightClaw = new SimpleServo(hardwareMap, rightId, 0, 360);
+        leftClaw = hardwareMap.servo.get(leftId);
+        rightClaw = hardwareMap.servo.get(rightId);
+        rotator = hardwareMap.servo.get(rotatorId);
 
-        rotator = new SimpleServo(hardwareMap, rotatorId, 0, 360);
-        rotator.setInverted(true);
 
-        leftClaw.setInverted(true);
+        leftClaw.setDirection(Servo.Direction.REVERSE);
     }
 
     public void grab() {
@@ -68,5 +66,17 @@ public class GrabberComponent {
 
     public boolean isDown() {
         return rotator.getPosition() == 0;
+    }
+
+    public Servo getLeftServo() {
+        return leftClaw;
+    }
+
+    public Servo getRightServo() {
+        return rightClaw;
+    }
+
+    public Servo getRotatorServo() {
+        return rotator;
     }
 }

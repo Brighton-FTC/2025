@@ -29,7 +29,7 @@ public class AutonomousGeneral extends LinearOpMode {
     public static double basketToSpikeHeading = Math.toRadians(45);
 
     public static double spikeX = 36;
-    public static double spikeY = 6;
+    public static double spikeY = 12;
     public static double spikeTangent = Math.toRadians(-45);
 
     // at the moment, error in the robot's odometry builds up over time and causes it to be a few inches off the second time it goes to the basket
@@ -45,7 +45,7 @@ public class AutonomousGeneral extends LinearOpMode {
     public static double parkY = 6;
     public static double parkTangent = Math.toRadians(0);
 
-    public static double WAIT_TIME = 0.1; // for some reason the robot's actions are more consistent when you wait in between each one
+    public static double WAIT_TIME = 0; // for some reason the robot's actions are more consistent when you wait in between each one
 
     @Override
     public void runOpMode() {
@@ -60,34 +60,30 @@ public class AutonomousGeneral extends LinearOpMode {
 
         Action startToBasket = drive.actionBuilder(initialPose)
                 .afterDisp(0, linearSlide::up)
-                .splineTo(new Vector2d(12, basket1Y / 2), Math.toRadians(90))
-                .waitSeconds(WAIT_TIME)
+//                .splineTo(new Vector2d(12, basket1Y / 2), Math.toRadians(90))
+//                .waitSeconds(WAIT_TIME)
                 .splineTo(new Vector2d(basket1X, basket1Y), basket1Tangent)
                 .waitSeconds(WAIT_TIME)
                 .turnTo(basket1Heading)
                 .build();
 
         Action basketToSpike1 = drive.actionBuilder(new Pose2d(basket1X, basket1Y, basket1Heading))
-                .turnTo(Math.toRadians(basketToSpikeHeading))
-                .waitSeconds(WAIT_TIME)
-                .splineTo(new Vector2d(spikeX, spikeY), spikeTangent)
+                //.setTangent(Math.toRadians(basketToSpikeHeading))
+                .splineToSplineHeading(new Pose2d(spikeX, spikeY, spikeTangent), spikeTangent)
                 .build();
 
         Action spike1ToBasket = drive.actionBuilder(new Pose2d(spikeX, spikeY, spikeTangent))
                 .turnTo(Math.PI)
-                .waitSeconds(WAIT_TIME)
                 .lineToX(basket2X)
                 .afterDisp(0, grabber::grab)
-                .waitSeconds(0.5)
+                .waitSeconds(0.25)
                 .afterDisp(0, linearSlide::up)
                 .splineTo(new Vector2d(basket2X, basket2Y), basket2Tangent)
                 .turnTo(basket2Heading)
                 .build();
 
         Action basketToPark = drive.actionBuilder(new Pose2d(basket2X, basket2Y, basket2Heading))
-                .turnTo(basketToParkHeading)
-                .waitSeconds(WAIT_TIME)
-                .setTangent(basketToParkHeading)
+                .turnTo(parkTangent)
                 .splineTo(new Vector2d(parkX, parkY), parkTangent)
                 .build();
 
