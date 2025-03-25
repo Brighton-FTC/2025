@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
 
 @Config
-@TeleOp(name = "Teleop (use this one)", group = "competition")
+@TeleOp(name = "Teleop", group = "competition")
 public class Teleop extends OpMode {
     public static final double TURN_THRESHOLD = 0.1;
     public static double SLOW_MODE_SPEED = 0.6;
@@ -33,10 +33,16 @@ public class Teleop extends OpMode {
 
     private boolean isRunningSlidePid = true;
     private boolean isRunningHeadingPid = true;
+    private boolean servoUpdated = true;
     private double inputMultiplier = 1;
 
     public static double kP = -0.035, kI = 0, kD = 0;
     private final PIDController headingController = new PIDController(kP, kI, kD);
+
+    @Override
+    public void start() {
+        grabber.grab(); // if everything goes to plan, this should pick up a sample that was collected but not scored in auto.
+    }
 
     @Override
     public void init() {
@@ -89,17 +95,33 @@ public class Teleop extends OpMode {
         if (gamepad.wasJustPressed(PSButtons.SQUARE)){
             grabber.toggleClaw();
         }
+
         if (gamepad.wasJustPressed(PSButtons.CIRCLE)){
             grabber.toggleRotator();
+        }
+
+        // automatically update servo rotator position
+        if (!servoUpdated && isRunningSlidePid) {
+            // move the swing-arm forward only once the slide is up, but move it down as soon as the slide starts moving down
+            if (slide.getSetPoint() == LinearSlideComponent.UP_POSITION && slide.atSetPoint()) {
+                grabber.down(); // for some reason sometimes the swing-arm doesn't rotate unless you call this first
+                grabber.forward();
+                servoUpdated = true;
+            } else if (slide.getSetPoint() == LinearSlideComponent.DOWN_POSITION) {
+                grabber.down();
+                servoUpdated = true;
+            }
         }
 
         // linear slide
         if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
             slide.up();
             isRunningSlidePid = true;
+            servoUpdated = false;
         } else if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
             slide.down();
             isRunningSlidePid = true;
+            servoUpdated = false;
 
         } else if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
                 - gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) != 0) {
@@ -161,7 +183,7 @@ public class Teleop extends OpMode {
         */
 
         // prepare for hang (disable heading PID and rotator servo)
-        if (gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER) && gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
+        if (gamepad.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
             if (isRunningHeadingPid) {
                 grabber.getRotatorServo().getController().pwmDisable();
                 isRunningHeadingPid = false;

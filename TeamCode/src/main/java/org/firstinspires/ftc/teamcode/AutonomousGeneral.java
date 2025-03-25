@@ -17,35 +17,33 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 
 
 @Config
-@Autonomous
+@Autonomous(preselectTeleOp = "Teleop")
 public class AutonomousGeneral extends LinearOpMode {
     protected MecanumDrive drive;
 
     public static double basket1X = 3;
-    public static double basket1Y = 24;
+    public static double basket1Y = 21;
     public static double basket1Tangent = Math.toRadians(180);
     public static double basket1Heading = Math.toRadians(-157.5);
 
-    public static double basketToSpikeHeading = Math.toRadians(45);
-
-    public static double spikeX = 36;
-    public static double spikeY = 12;
-    public static double spikeTangent = Math.toRadians(-45);
+    public static double spike1X = 36;
+    public static double spike1Y = 12;
+    public static double spike1Tangent = Math.toRadians(-45);
 
     // at the moment, error in the robot's odometry builds up over time and causes it to be a few inches off the second time it goes to the basket
     // ideally would like to fix this, but this works for now
     public static double basket2X = 3;
-    public static double basket2Y = 30;
+    public static double basket2Y = 26;
     public static double basket2Tangent = Math.toRadians(180);
     public static double basket2Heading = Math.toRadians(-157.5);
 
-    public static double basketToParkHeading = Math.toRadians(-135);
+    public static double spike2X = 38;
+    public static double spike2Y = 30;
+    public static double spike2Tangent = Math.toRadians(-45);
 
     public static double parkX = 54;
-    public static double parkY = 6;
-    public static double parkTangent = Math.toRadians(0);
-
-    public static double WAIT_TIME = 0; // for some reason the robot's actions are more consistent when you wait in between each one
+    public static double parkY = 3;
+    public static double parkTangent = Math.toRadians(-90);
 
     @Override
     public void runOpMode() {
@@ -63,17 +61,16 @@ public class AutonomousGeneral extends LinearOpMode {
 //                .splineTo(new Vector2d(12, basket1Y / 2), Math.toRadians(90))
 //                .waitSeconds(WAIT_TIME)
                 .splineTo(new Vector2d(basket1X, basket1Y), basket1Tangent)
-                .waitSeconds(WAIT_TIME)
                 .turnTo(basket1Heading)
                 .build();
 
         Action basketToSpike1 = drive.actionBuilder(new Pose2d(basket1X, basket1Y, basket1Heading))
                 //.setTangent(Math.toRadians(basketToSpikeHeading))
-                .splineToSplineHeading(new Pose2d(spikeX, spikeY, spikeTangent), spikeTangent)
+                .splineToSplineHeading(new Pose2d(spike1X, spike1Y, spike1Tangent), spike1Tangent)
                 .build();
 
-        Action spike1ToBasket = drive.actionBuilder(new Pose2d(spikeX, spikeY, spikeTangent))
-                .turnTo(Math.PI)
+        Action spike1ToBasket = drive.actionBuilder(new Pose2d(spike1X, spike1Y, spike1Tangent))
+                .turnTo(basket2Tangent)
                 .lineToX(basket2X)
                 .afterDisp(0, grabber::grab)
                 .waitSeconds(0.25)
@@ -83,15 +80,17 @@ public class AutonomousGeneral extends LinearOpMode {
                 .build();
 
         Action basketToPark = drive.actionBuilder(new Pose2d(basket2X, basket2Y, basket2Heading))
+                .lineToX(spike2X / 2) // if grabbing the sample fails, then make sure that it doesn't get carried with the bot
                 .turnTo(parkTangent)
+                .splineTo(new Vector2d(spike2X, spike2Y), spike2Tangent)
                 .splineTo(new Vector2d(parkX, parkY), parkTangent)
                 .build();
 
         Action scoreSample = new InstantAction(() -> {
-            grabber.down(); // for some mystical reason the grabber won't rotate forwards unless this has been called first
+            grabber.down(); // for some mystical reason the grabber won't rotate forwards the first time unless this has been called first
             sleep(20);
             grabber.forward();
-            sleep(1500);
+            sleep(1750);
 
             grabber.reset();
             sleep(500);
