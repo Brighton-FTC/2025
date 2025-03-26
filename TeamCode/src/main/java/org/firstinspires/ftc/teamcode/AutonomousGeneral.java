@@ -17,9 +17,14 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 
 
 @Config
-@Autonomous(preselectTeleOp = "Teleop")
+@Autonomous(name = "General Autonomous", preselectTeleOp = "Teleop")
 public class AutonomousGeneral extends LinearOpMode {
     protected MecanumDrive drive;
+
+
+    public static double startX = 0;
+    public static double startY = 0;
+    public static double startHeading = Math.toRadians(0);
 
     public static double basket1X = 3;
     public static double basket1Y = 21;
@@ -47,16 +52,14 @@ public class AutonomousGeneral extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(0, 0, 0);
-
-        drive = new MecanumDrive(hardwareMap, initialPose);
+        drive = new MecanumDrive(hardwareMap, new Pose2d(startX, startY, startHeading));
 
         LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "linear_slide_motor");
 
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "left_claw_servo", "right_claw_servo", "rotator_servo");
         grabber.grab();
 
-        Action startToBasket = drive.actionBuilder(initialPose)
+        Action startToBasket = drive.actionBuilder(new Pose2d(startX, startY, startHeading))
                 .afterDisp(0, linearSlide::up)
 //                .splineTo(new Vector2d(12, basket1Y / 2), Math.toRadians(90))
 //                .waitSeconds(WAIT_TIME)
@@ -84,6 +87,7 @@ public class AutonomousGeneral extends LinearOpMode {
                 .turnTo(parkTangent)
                 .splineTo(new Vector2d(spike2X, spike2Y), spike2Tangent)
                 .splineTo(new Vector2d(parkX, parkY), parkTangent)
+                .waitSeconds(1)
                 .build();
 
         Action scoreSample = new InstantAction(() -> {

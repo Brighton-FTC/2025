@@ -39,6 +39,8 @@ public class Teleop extends OpMode {
     public static double kP = -0.035, kI = 0, kD = 0;
     private final PIDController headingController = new PIDController(kP, kI, kD);
 
+    private double headingOffset = -90;
+
     @Override
     public void start() {
         grabber.grab(); // if everything goes to plan, this should pick up a sample that was collected but not scored in auto.
@@ -78,6 +80,7 @@ public class Teleop extends OpMode {
         ));
 
         imu.resetYaw();
+        headingController.setSetPoint(headingOffset);
 
         grabber = new GrabberComponent(hardwareMap, "left_claw_servo", "right_claw_servo", "rotator_servo");
 
@@ -136,7 +139,7 @@ public class Teleop extends OpMode {
         }
 
         // drivetrain
-        double yaw = imu.getRobotYawPitchRollAngles().getYaw();
+        double yaw = imu.getRobotYawPitchRollAngles().getYaw() + headingOffset;
 
         if (gamepad.wasJustPressed(PSButtons.TRIANGLE)) {
             isFieldCentric = !isFieldCentric;
@@ -157,6 +160,8 @@ public class Teleop extends OpMode {
                         gamepad.getLeftY() * inputMultiplier,
                         gamepad.getRightX() * inputMultiplier,
                         true);
+
+                headingOffset = imu.getRobotYawPitchRollAngles().getYaw(); // add a way to change heading offset.
             }
 
             headingController.setSetPoint(yaw);
