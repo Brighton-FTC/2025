@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
 
 @Config
 @TeleOp(name = "Teleop", group = "competition")
-public class Teleop extends OpMode {
+public class GeneralTeleop extends OpMode {
     public static final double TURN_THRESHOLD = 0.1;
     public static double SLOW_MODE_SPEED = 0.6;
 
@@ -39,7 +39,7 @@ public class Teleop extends OpMode {
     public static double kP = -0.035, kI = 0, kD = 0;
     private final PIDController headingController = new PIDController(kP, kI, kD);
 
-    private double headingOffset = -90;
+    private static double headingOffset = 0;
 
     @Override
     public void start() {
@@ -110,6 +110,12 @@ public class Teleop extends OpMode {
                 grabber.down(); // for some reason sometimes the swing-arm doesn't rotate unless you call this first
                 grabber.forward();
                 servoUpdated = true;
+
+            } else if (slide.getSetPoint() == LinearSlideComponent.UP_SPECIMEN_POSITION && slide.atSetPoint()) {
+                grabber.down();
+                grabber.scoreSpecimen();
+                servoUpdated = true;
+
             } else if (slide.getSetPoint() == LinearSlideComponent.DOWN_POSITION) {
                 grabber.down();
                 servoUpdated = true;
@@ -123,6 +129,11 @@ public class Teleop extends OpMode {
             servoUpdated = false;
         } else if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
             slide.down();
+            isRunningSlidePid = true;
+            servoUpdated = false;
+
+        } else if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
+            slide.upSpecimen();
             isRunningSlidePid = true;
             servoUpdated = false;
 
@@ -161,7 +172,7 @@ public class Teleop extends OpMode {
                         gamepad.getRightX() * inputMultiplier,
                         true);
 
-                headingOffset = imu.getRobotYawPitchRollAngles().getYaw(); // add a way to change heading offset.
+                setHeadingOffset(imu.getRobotYawPitchRollAngles().getYaw()); // add a way to change heading offset.
             }
 
             headingController.setSetPoint(yaw);
@@ -216,7 +227,7 @@ public class Teleop extends OpMode {
         telemetry.addLine();
 
         telemetry.addData("Grabber Status", grabber.isClosed() ? "Closed" : "Opened");
-        telemetry.addData("Grabber Rotator Status", grabber.isDown() ? "Down" : "Forwards");
+        telemetry.addData("Grabber Rotator Status", grabber.isDown() ? "Down" : "Up");
         telemetry.addLine();
     }
 
@@ -231,5 +242,14 @@ public class Teleop extends OpMode {
         }
 
         return yaw;
+    }
+
+    public static void setHeadingOffset(double headingOffset) {
+        GeneralTeleop.headingOffset = headingOffset;
+    }
+
+    @Override
+    public void stop() {
+        setHeadingOffset(0); // reset heading offset after one run
     }
 }

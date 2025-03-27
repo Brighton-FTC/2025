@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 
 
 @Config
-@Autonomous(name = "Sample Autonomous", group = "competition", preselectTeleOp = "Teleop")
+@Autonomous(name = "Sample Autonomous", preselectTeleOp = "Teleop")
 public class SampleAutonomous extends LinearOpMode {
     public static double startX = 0;
     public static double startY = 0;
@@ -114,5 +114,7 @@ public class SampleAutonomous extends LinearOpMode {
         while (!linearSlide.atSetPoint()) {
             sleep(20);
         }
+
+        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
 }

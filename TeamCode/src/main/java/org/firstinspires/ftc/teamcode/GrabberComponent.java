@@ -11,7 +11,8 @@ public class GrabberComponent {
     public static double RIGHT_CLAW_TURN_AMOUNT = 0.4;
 
     public static double ROTATOR_FORWARD_TURN_AMOUNT = 0.9;
-    public static double ROTATOR_UP_TURN_AMOUNT = 0.5;
+    public static double ROTATOR_SPECIMEN_SCORE_TURN_AMOUNT = 1.0;
+    public static double ROTATOR_DOWN_TILTED_TURN_AMOUNT = 0.2;
 
     private final Servo leftClaw, rightClaw, rotator;
 
@@ -53,8 +54,12 @@ public class GrabberComponent {
         rotator.setPosition(ROTATOR_FORWARD_TURN_AMOUNT);
     }
 
-    public void up() {
-        rotator.setPosition(ROTATOR_UP_TURN_AMOUNT);
+    public void scoreSpecimen() {
+        rotator.setPosition(ROTATOR_SPECIMEN_SCORE_TURN_AMOUNT);
+    }
+
+    public void tilt() {
+        rotator.setPosition(ROTATOR_DOWN_TILTED_TURN_AMOUNT);
     }
 
     public void toggleRotatorForward() {
@@ -67,7 +72,7 @@ public class GrabberComponent {
 
     public void toggleRotatorUp() {
         if (isDown()) {
-            up();
+            scoreSpecimen();
         } else {
             down();
         }
