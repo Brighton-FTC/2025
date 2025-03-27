@@ -12,12 +12,12 @@ public class LinearSlideComponent{
     private Motor slideMotor;
 
     private PIDController controller = new PIDController(0, 0, 0);
-    public static double kP = 0.003, kI = 0, kD = 0;
+    public static double kP = 0.003, kI = 0.05, kD = 0;
 
     public static double UP_POSITION = 9000;
     public static double DOWN_POSITION = 0;
 
-    public static double TOLERANCE = 50;
+    public static double TOLERANCE = 25;
 
     public LinearSlideComponent(HardwareMap hardwareMap, String motorId){
         slideMotor = new Motor(hardwareMap, motorId);

@@ -27,7 +27,7 @@ public class AutonomousGeneral extends LinearOpMode {
     public static double startHeading = Math.toRadians(0);
 
     public static double basket1X = 3;
-    public static double basket1Y = 21;
+    public static double basket1Y = 24;
     public static double basket1Tangent = Math.toRadians(180);
     public static double basket1Heading = Math.toRadians(-157.5);
 
@@ -47,7 +47,7 @@ public class AutonomousGeneral extends LinearOpMode {
     public static double spike2Tangent = Math.toRadians(-45);
 
     public static double parkX = 54;
-    public static double parkY = 3;
+    public static double parkY = 6;
     public static double parkTangent = Math.toRadians(-90);
 
     @Override
