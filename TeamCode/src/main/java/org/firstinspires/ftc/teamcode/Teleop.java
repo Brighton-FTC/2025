@@ -100,7 +100,7 @@ public class Teleop extends OpMode {
         }
 
         if (gamepad.wasJustPressed(PSButtons.CIRCLE)){
-            grabber.toggleRotator();
+            grabber.toggleRotatorForward();
         }
 
         // automatically update servo rotator position

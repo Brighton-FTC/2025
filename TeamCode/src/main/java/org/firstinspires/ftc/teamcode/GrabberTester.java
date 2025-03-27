@@ -28,7 +28,7 @@ public class GrabberTester extends OpMode {
         }
 
         if (gamepad.wasJustPressed(PSButtons.CIRCLE)) {
-            grabber.toggleRotator();
+            grabber.toggleRotatorForward();
         }
 
         telemetry.addData("Grabber Status", grabber.isClosed() ? "Closed" : "Opened");

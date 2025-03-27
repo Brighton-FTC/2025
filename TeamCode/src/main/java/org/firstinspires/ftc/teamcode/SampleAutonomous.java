@@ -1,14 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -17,11 +12,8 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 
 
 @Config
-@Autonomous(name = "General Autonomous", preselectTeleOp = "Teleop")
-public class AutonomousGeneral extends LinearOpMode {
-    protected MecanumDrive drive;
-
-
+@Autonomous(name = "Sample Autonomous", group = "competition", preselectTeleOp = "Teleop")
+public class SampleAutonomous extends LinearOpMode {
     public static double startX = 0;
     public static double startY = 0;
     public static double startHeading = Math.toRadians(0);
@@ -52,7 +44,7 @@ public class AutonomousGeneral extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        drive = new MecanumDrive(hardwareMap, new Pose2d(startX, startY, startHeading));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(startX, startY, startHeading));
 
         LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "linear_slide_motor");
 

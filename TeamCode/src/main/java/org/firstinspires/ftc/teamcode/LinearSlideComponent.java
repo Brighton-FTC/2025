@@ -16,6 +16,7 @@ public class LinearSlideComponent{
 
     public static double UP_POSITION = 9000;
     public static double DOWN_POSITION = 0;
+    public static double UP_SPECIMEN_POSITION = 1000;
 
     public static double TOLERANCE = 25;
 
@@ -42,6 +43,10 @@ public class LinearSlideComponent{
 
     public void down() {
         controller.setSetPoint(DOWN_POSITION);
+    }
+
+    public void upSpecimen() {
+        controller.setSetPoint(UP_SPECIMEN_POSITION);
     }
 
     public boolean atSetPoint() {
