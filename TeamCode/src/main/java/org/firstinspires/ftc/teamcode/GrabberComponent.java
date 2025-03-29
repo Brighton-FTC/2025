@@ -10,7 +10,7 @@ public class GrabberComponent {
     public static double LEFT_CLAW_TURN_AMOUNT = 1;
     public static double RIGHT_CLAW_TURN_AMOUNT = 0.4;
 
-    public static double ROTATOR_FORWARD_TURN_AMOUNT = 0.9;
+    public static double ROTATOR_FORWARD_TURN_AMOUNT = 0.8;
     public static double ROTATOR_SPECIMEN_SCORE_TURN_AMOUNT = 1.0;
     public static double ROTATOR_DOWN_TILTED_TURN_AMOUNT = 0.2;
 

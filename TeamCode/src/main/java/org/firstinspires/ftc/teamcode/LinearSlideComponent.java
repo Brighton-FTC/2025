@@ -14,7 +14,7 @@ public class LinearSlideComponent{
     private PIDController controller = new PIDController(0, 0, 0);
     public static double kP = 0.003, kI = 0.05, kD = 0;
 
-    public static double UP_POSITION = 9000;
+    public static double UP_POSITION = 2000;
     public static double DOWN_POSITION = 0;
     public static double UP_SPECIMEN_POSITION = 2500;
 

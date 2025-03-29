@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -18,7 +19,9 @@ public class SpecimenAutonomous extends LinearOpMode {
     public static double startY = 0;
     public static double startHeading = Math.toRadians(0);
 
-    public static double subX = 28;
+
+
+    public static double subX = 26;
     public static double subY = 0;
     public static double subTangent = Math.toRadians(0);
     public static double subHeading = Math.toRadians(90);
@@ -29,8 +32,8 @@ public class SpecimenAutonomous extends LinearOpMode {
 
     public static double spikeToParkHeading = Math.toRadians(180);
 
-    public static double parkX = 12;
-    public static double parkY = -42;
+    public static double parkX = 9;
+    public static double parkY = -46;
     public static double parkTangent = Math.toRadians(180);
     public static double parkHeading = Math.toRadians(0);
 
@@ -67,11 +70,6 @@ public class SpecimenAutonomous extends LinearOpMode {
             sleep(1750);
             grabber.scoreSpecimen();
             sleep(500);
-
-            grabber.reset();
-            sleep(500);
-
-            grabber.down();
         });
 
         grabber.grab();
@@ -87,8 +85,10 @@ public class SpecimenAutonomous extends LinearOpMode {
 
         Actions.runBlocking(startToSub);
         Actions.runBlocking(scoreSpecimen);
-        Actions.runBlocking(subToPark);
-
-        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
+        Actions.runBlocking(new InstantAction(linearSlide::down));
+        Actions.runBlocking(new SleepAction(5));
+        Actions.runBlocking(new InstantAction(grabber::reset));
+        Actions.runBlocking(new SleepAction(5));
+//        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
 }

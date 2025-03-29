@@ -17,9 +17,9 @@ public class SpecimenArmSetup extends LinearOpMode {
         }
 
         grabber.tilt();
-        sleep(300);
         linearSlide.down();
 
+        sleep(500);
         while (!linearSlide.atSetPoint() && !isStopRequested()) {
             linearSlide.run();
         }
