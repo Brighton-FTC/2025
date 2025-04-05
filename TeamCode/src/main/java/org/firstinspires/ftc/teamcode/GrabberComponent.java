@@ -1,27 +1,29 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 @Config
 public class GrabberComponent {
-    public static double CLAW_TURN_AMOUNT = 0.5;
-    public static double ROTATOR_TURN_AMOUNT = 1;
+    public static double LEFT_CLAW_TURN_AMOUNT = 1;
+    public static double RIGHT_CLAW_TURN_AMOUNT = 0.4;
 
-    private final ServoEx leftClaw, rightClaw, rotator;
+    public static double ROTATOR_FORWARD_TURN_AMOUNT = 0.9;
+    public static double ROTATOR_SPECIMEN_SCORE_TURN_AMOUNT = 1.0;
+    public static double ROTATOR_DOWN_TILTED_TURN_AMOUNT = 0.2;
+
+    private final Servo leftClaw, rightClaw, rotator;
 
 
     public GrabberComponent(HardwareMap hardwareMap, String leftId, String rightId, String rotatorId) {
-        leftClaw = new SimpleServo(hardwareMap, leftId, 0, 360);
-        rightClaw = new SimpleServo(hardwareMap, rightId, 0, 360);
+        leftClaw = hardwareMap.servo.get(leftId);
+        rightClaw = hardwareMap.servo.get(rightId);
+        rotator = hardwareMap.servo.get(rotatorId);
 
-        rotator = new SimpleServo(hardwareMap, rotatorId, 0, 360);
-        rotator.setInverted(true);
 
-        leftClaw.setInverted(true);
+        leftClaw.setDirection(Servo.Direction.REVERSE);
     }
 
     public void grab() {
@@ -31,8 +33,8 @@ public class GrabberComponent {
     }
 
     public void reset() {
-        leftClaw.setPosition(CLAW_TURN_AMOUNT);
-        rightClaw.setPosition(CLAW_TURN_AMOUNT);
+        leftClaw.setPosition(LEFT_CLAW_TURN_AMOUNT);
+        rightClaw.setPosition(RIGHT_CLAW_TURN_AMOUNT);
 
     }
 
@@ -49,10 +51,22 @@ public class GrabberComponent {
     }
 
     public void forward() {
-        rotator.setPosition(ROTATOR_TURN_AMOUNT);
+        rotator.setPosition(ROTATOR_FORWARD_TURN_AMOUNT * 2 / 3);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+        rotator.setPosition(ROTATOR_FORWARD_TURN_AMOUNT);
     }
 
-    public void toggleRotator() {
+    public void scoreSpecimen() {
+        rotator.setPosition(ROTATOR_SPECIMEN_SCORE_TURN_AMOUNT);
+    }
+
+    public void tilt() {
+        rotator.setPosition(ROTATOR_DOWN_TILTED_TURN_AMOUNT);
+    }
+
+    public void toggleRotatorForward() {
         if (rotator.getPosition() == 0) {
             forward();
         } else {
@@ -66,5 +80,17 @@ public class GrabberComponent {
 
     public boolean isDown() {
         return rotator.getPosition() == 0;
+    }
+
+    public Servo getLeftServo() {
+        return leftClaw;
+    }
+
+    public Servo getRightServo() {
+        return rightClaw;
+    }
+
+    public Servo getRotatorServo() {
+        return rotator;
     }
 }
