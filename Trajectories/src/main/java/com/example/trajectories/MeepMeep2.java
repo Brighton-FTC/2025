@@ -43,13 +43,14 @@ public class MeepMeep2 {
 
 
         Bot1.runAction(Bot1.getDrive().actionBuilder(new Pose2d(Roriginal_x, 56, -startHeading))
-                        .splineTo(new Vector2d(30, 34), RsubHeading)
-                .splineToConstantHeading(new Vector2d(loop_x, 10), RsubTangent)
-                .splineToSplineHeading(new Pose2d(loop_x+5, 55, RsubHeading), RsubTangent)
-                .splineToSplineHeading(new Pose2d(loop_x+10, 10, RsubHeading), RsubTangent)
-                .splineToSplineHeading(new Pose2d(loop_x+15, 55, RsubHeading), RsubTangent)
-                .splineToSplineHeading(new Pose2d(loop_x+20, 10, RsubHeading), RsubTangent)
-                .splineToSplineHeading(new Pose2d(loop_x+25, 55, RsubHeading), RsubTangent)
+                .splineTo(new Vector2d(Roriginal_x, 34), LsubHeading)
+                .lineToX(30)
+                .splineToSplineHeading(new Pose2d(loop_x, 25, Math.toRadians(270)), LsubTangent)
+                .splineToSplineHeading(new Pose2d(55, 55, Math.toRadians(-45)), LsubTangent)
+                .splineToSplineHeading(new Pose2d(loop_x+9, 25, Math.toRadians(270)), LsubTangent)
+                .splineToSplineHeading(new Pose2d(55, 55, Math.toRadians(-45)), LsubTangent)
+                .splineToSplineHeading(new Pose2d(loop_x+20, 25, Math.toRadians(270)), LsubTangent)
+                .splineToSplineHeading(new Pose2d(55, 55, Math.toRadians(-45)), LsubTangent)
                 .build());
 
         SpecBot1.runAction(SpecBot1.getDrive().actionBuilder(new Pose2d(Loriginal_x, 56, -startHeading))
@@ -62,14 +63,16 @@ public class MeepMeep2 {
                 .splineToSplineHeading(new Pose2d(-1*(loop_x+20), 10, LsubHeading), LsubTangent)
                 .splineToSplineHeading(new Pose2d(-1*(loop_x+25), 55, LsubHeading), LsubTangent)
                 .build());
+
         Bot3.runAction(Bot3.getDrive().actionBuilder(new Pose2d(Loriginal_x, -56, startHeading))
-                .splineTo(new Vector2d(-30, -34), LsubHeading)
-                .splineToConstantHeading(new Vector2d(-1*(loop_x), -10), LsubTangent)
-                .splineToSplineHeading(new Pose2d(-1*(loop_x+5), -55, LsubHeading), LsubTangent)
-                .splineToSplineHeading(new Pose2d(-1*(loop_x+10), -10, LsubHeading), LsubTangent)
-                .splineToSplineHeading(new Pose2d(-1*(loop_x+15), -55, LsubHeading), LsubTangent)
-                .splineToSplineHeading(new Pose2d(-1*(loop_x+20), -10, LsubHeading), LsubTangent)
-                .splineToSplineHeading(new Pose2d(-1*(loop_x+25), -55, LsubHeading), LsubTangent)
+                .splineTo(new Vector2d(Loriginal_x, -34), RsubHeading)
+                .lineToX(-30)
+                .splineToSplineHeading(new Pose2d(-loop_x, -25, Math.toRadians(90)), RsubTangent)
+                .splineToSplineHeading(new Pose2d(-55, -55, Math.toRadians(135)), RsubTangent)
+                .splineToSplineHeading(new Pose2d(-loop_x-9, -25, Math.toRadians(90)), RsubTangent)
+                .splineToSplineHeading(new Pose2d(-55, -55, Math.toRadians(135)), RsubTangent)
+                .splineToSplineHeading(new Pose2d(-loop_x-20, -25, Math.toRadians(90)), RsubTangent)
+                .splineToSplineHeading(new Pose2d(-55, -55, Math.toRadians(135)), RsubTangent)
                 .build());
 
         SpecBot2.runAction(SpecBot2.getDrive().actionBuilder(new Pose2d(Roriginal_x, -56, startHeading))
