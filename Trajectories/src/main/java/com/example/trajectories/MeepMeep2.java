@@ -12,7 +12,7 @@ public class MeepMeep2 {
 
         MeepMeep meepMeep = new MeepMeep(800);
 
-        double test;
+
 
         RoadRunnerBotEntity Bot1 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
