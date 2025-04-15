@@ -40,6 +40,8 @@ public class MeepMeep2 {
                 .splineToSplineHeading(new Pose2d(-55, -55, Math.toRadians(135)), RsubTangent)
                 .splineToSplineHeading(new Pose2d(-loop_x-20, -38, Math.toRadians(0)), RsubTangent)
                 .splineToSplineHeading(new Pose2d(-55, -55, Math.toRadians(135)), RsubTangent)
+                .splineToSplineHeading(new Pose2d(-57, -10, Math.toRadians(90)), RsubTangent)
+                .splineToConstantHeading(new Vector2d(-65, -55), RsubTangent)
                 .build());
 
 
