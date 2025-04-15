@@ -26,8 +26,6 @@ public class MeepMeep2 {
 
         double RsubTangent = Math.toRadians(90);
         double RsubHeading = Math.toRadians(0);
-        double LsubHeading = Math.toRadians(180);
-        double LsubTangent = Math.toRadians(-90);
         double Roriginal_x = 10;
         double Loriginal_x = -10;
         double loop_x = 39;
