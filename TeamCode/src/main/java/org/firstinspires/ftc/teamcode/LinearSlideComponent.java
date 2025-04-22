@@ -2,55 +2,64 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @Config
-public class LinearSlideComponent{
-    private Motor slideMotor;
+public class LinearSlideComponent {
+
+    public static double kp = 0;
+
+    public static double ki = 0;
+
+    public static double kd = 0;
+
+    private double setpoint = 0;
+
+    public static double UP_POSITION = 0;
+
+    public static double DOWN_POSITION = 0;
 
     private PIDController controller = new PIDController(0, 0, 0);
-    public static double kP = 0.003, kI = 0.05, kD = 0;
 
-    public static double UP_POSITION = 9000;
-    public static double DOWN_POSITION = 0;
-    public static double UP_SPECIMEN_POSITION = 2500;
+    private Motor slideMotor;
 
-    public static double TOLERANCE = 25;
+    private TouchSensor touchSensor;
 
-    public LinearSlideComponent(HardwareMap hardwareMap, String motorId){
-        slideMotor = new Motor(hardwareMap, motorId);
-        slideMotor.resetEncoder();
-        // slideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        slideMotor.setRunMode(Motor.RunMode.VelocityControl);
-        controller.setSetPoint(DOWN_POSITION);
-        controller.setTolerance(TOLERANCE);
+    private boolean isrunningPID;
+
+    public LinearSlideComponent(HardwareMap hardwareMap, String motorid, String touchSensorid) {
+        slideMotor = new Motor(hardwareMap, motorid);
+        touchSensor = hardwareMap.touchSensor.get(touchSensorid);
+
     }
 
-    /**
-     * Make sure to call every tick.
-     */
     public void run() {
-        controller.setPID(kP, kI, kD);
-        slideMotor.set(controller.calculate(slideMotor.getCurrentPosition()));
+        if (isrunningPID) {
+            controller.setPID(kp, ki, kd);
+            slideMotor.set(controller.calculate(slideMotor.getCurrentPosition()));
+        } else if (!touchSensor.isPressed()) {
+            slideMotor.set(-0.5);
+
+        } else {
+            slideMotor.set(0);
+        }
+
     }
 
     public void up() {
+        isrunningPID = true;
         controller.setSetPoint(UP_POSITION);
     }
 
     public void down() {
+        isrunningPID = true;
         controller.setSetPoint(DOWN_POSITION);
     }
 
-    public void upSpecimen() {
-        controller.setSetPoint(UP_SPECIMEN_POSITION);
-    }
-
-    public boolean atSetPoint() {
-            return controller.atSetPoint();
+    public void downToSwitch() {
+        isrunningPID = false;
     }
 
     public Motor getMotor() {
@@ -60,4 +69,9 @@ public class LinearSlideComponent{
     public double getSetPoint() {
         return controller.getSetPoint();
     }
+
+    public boolean atSetPoint() {
+        return controller.atSetPoint();
+    }
 }
+
