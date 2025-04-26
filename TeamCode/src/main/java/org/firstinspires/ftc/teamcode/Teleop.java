@@ -30,7 +30,7 @@ public class Teleop extends OpMode {
 
     private double inputMultiplier = 1;
 
-    public static double kP = -0.015, kI = 0, kD = 0;
+    public static double kP = 0.015, kI = 0, kD = 0;
     public static double HEADING_TOLERANCE = 3;
     private final PIDController headingController = new PIDController(kP, kI, kD);
 
@@ -62,7 +62,7 @@ public class Teleop extends OpMode {
         imu.initialize(new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                        RevHubOrientationOnRobot.UsbFacingDirection.UP
                 )
         ));
 
@@ -88,33 +88,16 @@ public class Teleop extends OpMode {
             inputMultiplier = inputMultiplier == 1 ? SLOW_MODE_SPEED : 1;
         }
 
-        if (gamepad.getRightX() != 0) {
-            if (isFieldCentric) {
-                drive.driveFieldCentric(gamepad.getLeftX() * inputMultiplier,
-                        gamepad.getLeftY() * inputMultiplier,
-                        gamepad.getRightX() * inputMultiplier,
-                        yaw, true);
-            } else {
-                drive.driveRobotCentric(gamepad.getLeftX() * inputMultiplier,
-                        gamepad.getLeftY() * inputMultiplier,
-                        gamepad.getRightX() * inputMultiplier,
-                        true);
-            }
-
-            headingController.setSetPoint(yaw);
-
+        if (isFieldCentric) {
+            drive.driveFieldCentric(gamepad.getLeftX() * inputMultiplier,
+                    gamepad.getLeftY() * inputMultiplier,
+                    gamepad.getRightX() * inputMultiplier,
+                    yaw, true);
         } else {
-            if (isFieldCentric) {
-                drive.driveFieldCentric(gamepad.getLeftX() * inputMultiplier,
-                        gamepad.getLeftY() * inputMultiplier,
-                        headingController.atSetPoint() ? 0 : headingController.calculate(correctYaw(yaw, headingController.getSetPoint())),
-                        yaw, true);
-            } else {
-                drive.driveRobotCentric(gamepad.getLeftX() * inputMultiplier,
-                        gamepad.getLeftY() * inputMultiplier,
-                        headingController.atSetPoint() ?  0 : headingController.calculate(correctYaw(yaw, headingController.getSetPoint())),
-                        true);
-            }
+            drive.driveRobotCentric(gamepad.getLeftX() * inputMultiplier,
+                    gamepad.getLeftY() * inputMultiplier,
+                    gamepad.getRightX() * inputMultiplier,
+                    true);
         }
 
         telemetry.addData("Control", gamepad == gamepad1Ex ? "Gamepad 1" : "Gamepad 2");
@@ -127,18 +110,5 @@ public class Teleop extends OpMode {
         telemetry.addData("Heading", yaw);
         telemetry.addData("Target Heading", headingController.getSetPoint());
         telemetry.addLine();
-    }
-
-    // wraps yaw, in degrees
-    private double correctYaw(double yaw, double expectedYaw) {
-        while (expectedYaw - yaw > 180) {
-            yaw += 360;
-        }
-
-        while (expectedYaw - yaw < -180) {
-            yaw -= 360;
-        }
-
-        return yaw;
     }
 }
