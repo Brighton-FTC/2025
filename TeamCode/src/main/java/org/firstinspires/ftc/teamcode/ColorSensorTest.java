@@ -16,10 +16,7 @@ public class ColorSensorTester extends OpMode {
     private MecanumDrive drive;
     private IMU imu;
 
-    double FinalEX;
-
     GamepadEx gamePad;
-    boolean moving = false;
 
     @Override
     public void init() {
@@ -59,19 +56,16 @@ public class ColorSensorTester extends OpMode {
     public void loop() {
 
 
-        if (gamePad.getButton(PSButtons.SQUARE)) {
+        if (gamePad.wasJustPressed(PSButtons.SQUARE)) {
             sensor.blueCheck();
+            sensor.runComponent();
 
         }
 
+        if (gamePad.wasJustPressed(PSButtons.CIRCLE)){
+            sensor.redCheck();
+            sensor.runComponent();
 
-
-
-        while (sensor.moving) {
-            for (double CurrentEX = 0; CurrentEX <= FinalEX;) {
-                drive.driveRobotCentric(-2, 0, 0);
-                drive.driveRobotCentric(2, 0, 0);
-            }
         }
 
     }
