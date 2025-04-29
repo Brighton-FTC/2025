@@ -9,13 +9,11 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 @Config
 public class LinearSlideComponent {
 
-    public static double kp = 0;
+    public static double kp = 0.005;
 
     public static double ki = 0;
 
     public static double kd = 0;
-
-    private double setpoint = 0;
 
     public static double UP_POSITION = 0;
 
@@ -27,25 +25,33 @@ public class LinearSlideComponent {
 
     private TouchSensor touchSensor;
 
-    private boolean isrunningPID;
+    private boolean isrunningPID = true;
 
     public LinearSlideComponent(HardwareMap hardwareMap, String motorid, String touchSensorid) {
         slideMotor = new Motor(hardwareMap, motorid);
         touchSensor = hardwareMap.touchSensor.get(touchSensorid);
-
+        slideMotor.resetEncoder();
     }
 
     public void run() {
         if (isrunningPID) {
             controller.setPID(kp, ki, kd);
-            slideMotor.set(controller.calculate(slideMotor.getCurrentPosition()));
-        } else if (!touchSensor.isPressed()) {
-            slideMotor.set(-0.5);
 
+            double power = controller.calculate(slideMotor.getCurrentPosition());
+
+            if (touchSensor.isPressed()) {
+                slideMotor.set(Math.max(power, 0));
+                slideMotor.stopAndResetEncoder();
+            } else {
+                slideMotor.set(power);
+            }
         } else {
-            slideMotor.set(0);
+            if (touchSensor.isPressed()) {
+                slideMotor.set(0);
+            } else {
+                slideMotor.set(-0.5);
+            }
         }
-
     }
 
     public void up() {
@@ -72,6 +78,10 @@ public class LinearSlideComponent {
 
     public boolean atSetPoint() {
         return controller.atSetPoint();
+    }
+
+    public boolean isTouchSensorPressed() {
+        return touchSensor.isPressed();
     }
 }
 

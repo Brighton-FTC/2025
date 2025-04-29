@@ -52,7 +52,8 @@ public class LinearSlideOpmode extends OpMode {
 
         telemetry.addData("Position", linearSlide.getMotor().getCurrentPosition());
         telemetry.addData("Set point", linearSlide.getSetPoint());
-        telemetry.addData("At Set-Point", linearSlide.atSetPoint());
+        telemetry.addData("At Set-Point?", linearSlide.atSetPoint());
+        telemetry.addData("Is Touch Sensor Pressed?", linearSlide.isTouchSensorPressed());
     }
 
 }
