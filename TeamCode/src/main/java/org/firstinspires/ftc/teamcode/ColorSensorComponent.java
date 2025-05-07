@@ -19,20 +19,21 @@ public class ColorSensorComponent {
 
     double FinalEX;
 
-    public ColorSensorComponent(HardwareMap hardwareMap, String SensorID) {
+    public ColorSensorComponent(HardwareMap hardwareMap, String SensorID, MecanumDrive drive) {
         colorSensor = (NormalizedColorSensor) hardwareMap.colorSensor.get(SensorID);
         colorSensor.setGain(2);
+        this.drive = drive;
     }
 
     public void runComponent(){
         while(moving){
             for (double CurrentEX = 0; CurrentEX <= FinalEX;) {
                 while(currentDistance<=travelDistance) {
-                    drive.driveRobotCentric(-2, 0, 0);
+                    drive.driveRobotCentric(0, -2, 0);
                     currentDistance+=2;
                 }
                 while(currentDistance<=travelDistance) {
-                    drive.driveRobotCentric(2, 0, 0);
+                    drive.driveRobotCentric(0, 2, 0);
                     currentDistance+=2;
                 }
             }

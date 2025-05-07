@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 @TeleOp
-public class ColorSensorTester extends OpMode {
+class ColorSensorTester extends OpMode {
     private ColorSensorComponent sensor;
 
     private MecanumDrive drive;
@@ -20,7 +20,7 @@ public class ColorSensorTester extends OpMode {
 
     @Override
     public void init() {
-        sensor = new ColorSensorComponent(hardwareMap, "color-sensor");
+        sensor = new ColorSensorComponent(hardwareMap, "color-sensor", drive);
         gamePad = new GamepadEx(gamepad1);
 
         Motor[] motors = {
