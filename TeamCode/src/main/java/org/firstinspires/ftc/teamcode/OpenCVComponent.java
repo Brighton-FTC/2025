@@ -14,10 +14,6 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-
-
-
-
 @TeleOp
 public class OpenCVComponent {
 
@@ -48,9 +44,8 @@ public class OpenCVComponent {
 
     }
 
-
     public void startStreaming(){
-        webcam.startStreaming(320, 240);
+        webcam.startStreaming(639, 479);
     }
 
     public void stopStreaming(){
@@ -65,7 +60,7 @@ public class OpenCVComponent {
         if (largestContour != null) {
             Moments moments = Imgproc.moments(largestContour);
             double centerX = moments.get_m10() / moments.get_m00(); // X centroid of the contour
-            while (centerX > 0) {
+            while (centerX < 320) {
                 drive.driveRobotCentric(0, -0.5, 0);  // Move forward
                 moments = Imgproc.moments(largestContour);
                 centerX = moments.get_m10() / moments.get_m00(); // Recalculate centroid
@@ -82,7 +77,7 @@ public class OpenCVComponent {
         if (largestContour != null) {
             Moments moments = Imgproc.moments(largestContour);
             double centerX = moments.get_m10() / moments.get_m00(); // X centroid of the contour
-            while (centerX > 0) {
+            while (centerX < 320 ) {
                 drive.driveRobotCentric(0, -0.5, 0);  // Move forward
                 moments = Imgproc.moments(largestContour);
                 centerX = moments.get_m10() / moments.get_m00(); // Recalculate centroid
@@ -100,7 +95,7 @@ public class OpenCVComponent {
         if (largestContour != null) {
             Moments moments = Imgproc.moments(largestContour);
             double centerX = moments.get_m10() / moments.get_m00(); // X centroid of the contour
-            while (centerX > 0) {
+            while (centerX < 320) {
                 drive.driveRobotCentric(0, -0.5, 0);  // Move forward
                 moments = Imgproc.moments(largestContour);
                 centerX = moments.get_m10() / moments.get_m00(); // Recalculate centroid
