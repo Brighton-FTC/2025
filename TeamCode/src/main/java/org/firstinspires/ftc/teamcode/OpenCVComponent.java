@@ -110,43 +110,6 @@ public class OpenCVComponent {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void blueCheck(){
         extending = true;
         while (extending) {
