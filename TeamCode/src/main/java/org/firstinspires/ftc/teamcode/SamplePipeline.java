@@ -18,7 +18,7 @@ public abstract class SamplePipeline extends OpenCvPipeline {
     public static final Size BLUR_SIZE = new Size(7, 7);
 
     private final Scalar lower, upper;
-    private List<MatOfPoint> contours = new ArrayList<>();
+    private final List<MatOfPoint> contours = new ArrayList<>();
 
     private MatOfPoint largestContour;
 
@@ -47,11 +47,10 @@ public abstract class SamplePipeline extends OpenCvPipeline {
 
         // find the largest contour
         largestContour = contours.stream()
-                .max(Comparator.comparing((contour) -> contour.width() * contour.height()))
+                .max(Comparator.comparing(Imgproc::contourArea))
                 .orElse(null);
 
-        // discard contour if it is too small
-        if (largestContour != null && largestContour.width() * largestContour.height() < MIN_AREA) {
+        if (largestContour != null && Imgproc.contourArea(largestContour) < MIN_AREA) {
             largestContour = null;
         }
 

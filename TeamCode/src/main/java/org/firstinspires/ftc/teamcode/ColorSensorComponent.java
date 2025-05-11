@@ -15,7 +15,7 @@ public class ColorSensorComponent {
 
     double currentDistance;
 
-    private MecanumDrive drive;
+    private final MecanumDrive drive;
 
     double FinalEX;
 
