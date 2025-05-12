@@ -20,7 +20,7 @@ class ColorSensorTester extends OpMode {
 
     @Override
     public void init() {
-        sensor = new ColorSensorComponent(hardwareMap, "color-sensor", drive);
+        sensor = new ColorSensorComponent(hardwareMap, "color-sensor");
         gamePad = new GamepadEx(gamepad1);
 
         Motor[] motors = {

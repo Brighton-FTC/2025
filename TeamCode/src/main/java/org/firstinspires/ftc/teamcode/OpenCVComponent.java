@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -24,17 +25,27 @@ public class OpenCVComponent {
     private final RedSamplePipeline redPipeLine = new RedSamplePipeline();
     private final YellowSamplePipeline yellowPipeLine = new YellowSamplePipeline();
 
-    private OpenCvPipeline currentPipeline;
-    double currentDistance;
     MatOfPoint largestContour;
     boolean extending;
 
-    public OpenCVComponent(HardwareMap hardwareMap, String sensorID, MecanumDrive drive, String webcamID) {
+    public OpenCVComponent(HardwareMap hardwareMap, String sensorID, String webcamID) {
+
+        Motor[] motors = {
+                new Motor(hardwareMap, "front_left_drive"),
+                new Motor(hardwareMap, "front_right_drive"),
+                new Motor(hardwareMap, "back_left_drive"),
+                new Motor(hardwareMap, "back_right_drive")
+        };
+
+        for (Motor motor : motors) {
+            motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        }
+
+        motors[2].setInverted(true);
         // Initialize the color sensor
         colorSensor = (NormalizedColorSensor) hardwareMap.colorSensor.get(sensorID);
         colorSensor.setGain(2);  // Set the color sensor gain
-        this.drive = drive;
-
+        drive = new MecanumDrive(motors[0], motors[1], motors[2], motors[3]);
         // Initialize the webcam
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
