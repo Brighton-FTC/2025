@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
@@ -14,7 +15,15 @@ class ColorSensorTester extends OpMode {
 
     @Override
     public void init() {
-        sensor = new ColorSensorComponent(hardwareMap, "color-sensor");
+
+        Motor[] motors = {
+                new Motor(hardwareMap, "front_left_drive"),
+                new Motor(hardwareMap, "front_right_drive"),
+                new Motor(hardwareMap, "back_left_drive"),
+                new Motor(hardwareMap, "back_right_drive")
+        };
+
+        sensor = new ColorSensorComponent(hardwareMap, "sensor_color", motors);
         gamePad = new GamepadEx(gamepad1);
     }
 
