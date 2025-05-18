@@ -15,7 +15,7 @@ public class OpenCVTester extends OpMode {
 
     GamepadEx gamePad;
 
-    boolean cameraOn;
+    boolean cameraOn = false;
 
     @Override
     public void init() {
@@ -45,34 +45,38 @@ public class OpenCVTester extends OpMode {
 
         telemetry.addData("Status", "Init complete");
         telemetry.update();
+
+
+
+
     }
 
 
 
     @Override
     public void loop() {
+        telemetry.addData("Loop", "Running"); // <--- NEW: confirms loop is executing
+        gamePad.readButtons(); // <--- Mandatory!
 
+        telemetry.addData("SQUARE", gamePad.wasJustPressed(PSButtons.SQUARE));
+        telemetry.addData("CIRCLE", gamePad.wasJustPressed(PSButtons.CIRCLE));
+        telemetry.addData("CameraOn", cameraOn);
+        telemetry.addData("IsCentered", sensor.isCentered());
+
+        telemetry.update();
+
+        // Handle gamepad button presses
         if (gamePad.wasJustPressed(PSButtons.SQUARE)&&!cameraOn) {
             sensor.switchToBlue();
             cameraOn = true;
-        }
-
-        if (gamePad.wasJustPressed(PSButtons.CIRCLE)&&!cameraOn){
+        } else if (gamePad.wasJustPressed(PSButtons.CIRCLE)&&!cameraOn) {
             sensor.switchToRed();
             cameraOn = true;
-
-        }
-        if (gamePad.wasJustPressed(PSButtons.SQUARE)&&cameraOn){
-            sensor.stopStreaming();
+        }else if (gamePad.wasJustPressed(PSButtons.CIRCLE) || gamePad.wasJustPressed(PSButtons.SQUARE) && cameraOn){
             cameraOn = false;
-        }
-        if (gamePad.wasJustPressed(PSButtons.CIRCLE)&&cameraOn){
             sensor.stopStreaming();
-            cameraOn = false;
         }
-
-
-
-
     }
+
+
 }

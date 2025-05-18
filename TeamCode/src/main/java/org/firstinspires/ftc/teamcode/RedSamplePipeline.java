@@ -8,8 +8,8 @@ import org.opencv.imgproc.Imgproc;
 import java.util.Collections;
 
 public class RedSamplePipeline extends SamplePipeline {
-    public static final Scalar LOWER = new Scalar(140, 100, 160);
-    public static final Scalar UPPER = new Scalar(240, 245, 240);
+    public static final Scalar LOWER = new Scalar(170, 120, 70);
+    public static final Scalar UPPER = new Scalar(180, 255, 255);
 
     public RedSamplePipeline() {
         super(LOWER, UPPER);

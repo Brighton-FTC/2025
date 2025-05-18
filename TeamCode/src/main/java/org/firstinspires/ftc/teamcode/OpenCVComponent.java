@@ -11,12 +11,14 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.acmerobotics.dashboard.FtcDashboard;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.MatOfPoint;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Config
@@ -26,6 +28,8 @@ public class OpenCVComponent {
     private final BlueSamplePipeline bluePipeLine = new BlueSamplePipeline();
     private final RedSamplePipeline redPipeLine = new RedSamplePipeline();
     private final YellowSamplePipeline yellowPipeLine = new YellowSamplePipeline();
+
+    private SamplePipeline currentPipeLine;
 
     MatOfPoint largestContour;
     boolean extending;
@@ -49,7 +53,10 @@ public class OpenCVComponent {
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam.startStreaming(320, 240);
+                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+                FtcDashboard.getInstance().startCameraStream(webcam, 60);
+
+
             }
             @Override
             public void onError(int errorCode) {
@@ -67,63 +74,58 @@ public class OpenCVComponent {
     // Switch to the blue pipeline
     public void switchToBlue() {
         startStreaming();
+        telemetry.addData("Camera", "On");
         webcam.setPipeline(bluePipeLine);
-        largestContour = bluePipeLine.getLargestContour();
-        if (largestContour != null) {
-            Moments moments = Imgproc.moments(largestContour);
-            double centerX = moments.get_m10() / moments.get_m00(); // X centroid of the contour
-            while (Math.abs(centerX - 160) > 5) {
-                telemetry.addData("Centered", false);
-                telemetry.update();
-
-            }
-            telemetry.addData("Centered", true);
-            telemetry.update();
-
-
-        }
+        currentPipeLine = bluePipeLine;
+        telemetry.update();
     }
 
-    // Switch to the red pipeline
     public void switchToRed() {
         startStreaming();
+        telemetry.addData("Camera", "On");
         webcam.setPipeline(redPipeLine);
-        largestContour = redPipeLine.getLargestContour();
-        if (largestContour != null) {
-            Moments moments = Imgproc.moments(largestContour);
-            double centerX = moments.get_m10() / moments.get_m00(); // X centroid of the contour
-            while (Math.abs(centerX - 160) > 5) {
-                moments = Imgproc.moments(largestContour);
-                centerX = moments.get_m10() / moments.get_m00();
-                telemetry.addData("Centered", false);
-                telemetry.update();// Recalculate centroid
-            }
-            telemetry.addData("Centered", true);
-            telemetry.update();
-
-        }
+        currentPipeLine = redPipeLine;
+        telemetry.update();
     }
+
+    public boolean isCentered() {
+        MatOfPoint contour = null;
+        if (currentPipeLine == bluePipeLine) {
+            contour = bluePipeLine.getLargestContour();
+        } else if (currentPipeLine == redPipeLine) {
+            contour = redPipeLine.getLargestContour();
+        } else if (currentPipeLine == yellowPipeLine) {
+            contour = yellowPipeLine.getLargestContour();
+        }
+
+        if (contour == null) return false;
+
+        Moments moments = Imgproc.moments(contour);
+        if (moments.get_m00() == 0) return false;
+
+        if (largestContour != null) {
+            telemetry.addData("Contour Area", Imgproc.contourArea(largestContour));
+        } else {
+            telemetry.addData("Contour", "None");
+        }
+        telemetry.update();
+
+        // Avoid division by zero
+
+        double centerX = moments.get_m10() / moments.get_m00();
+        return Math.abs(centerX - 320) <= 60;  // Center threshold with some tolerance
+    }
+
 
     // Switch to the yellow pipeline
     public void switchToYellow() {
         startStreaming();
-        webcam.setPipeline(yellowPipeLine);
-        largestContour = yellowPipeLine.getLargestContour();
-
-        if (largestContour != null) {
-            Moments moments = Imgproc.moments(largestContour);
-            double centerX = moments.get_m10() / moments.get_m00(); // X centroid of the contour
-            while (Math.abs(centerX - 160) > 5) {
-                moments = Imgproc.moments(largestContour);
-                centerX = moments.get_m10() / moments.get_m00();
-                telemetry.addData("Centered", false);// Recalculate centroid
-                telemetry.update();
-            }
-            telemetry.addData("Centered", true);
-            telemetry.update();
-
-        }
+        telemetry.addData("Camera", "On");
+        webcam.setPipeline(bluePipeLine);
+        currentPipeLine = bluePipeLine;
+        telemetry.update();
     }
+
 
 
 }
