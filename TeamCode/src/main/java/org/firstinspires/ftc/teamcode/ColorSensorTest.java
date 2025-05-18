@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
 
 @TeleOp
-class ColorSensorTester extends OpMode {
+public class ColorSensorTest extends OpMode {
     private ColorSensorComponent sensor;
 
 
