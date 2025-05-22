@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -25,8 +26,20 @@ public class OpenCVTester extends OpMode {
         telemetry.addData("Status", "Init started");
         telemetry.update();
 
+        Motor[] motors = {
+                new Motor(hardwareMap, "front_left_drive"),
+                new Motor(hardwareMap, "front_right_drive"),
+                new Motor(hardwareMap, "back_left_drive"),
+                new Motor(hardwareMap, "back_right_drive")
+        };
+
+        for (Motor motor : motors) {
+            motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        }
+
+
         try {
-            sensor = new OpenCVComponent(hardwareMap, "Webcam 1");
+            sensor = new OpenCVComponent(hardwareMap, "Webcam 1", motors);
             telemetry.addData("OpenCV", "Initialized webcam");
         } catch (Exception e) {
             telemetry.addData("OpenCV ERROR", e.toString());
@@ -61,7 +74,7 @@ public class OpenCVTester extends OpMode {
         telemetry.addData("SQUARE", gamePad.wasJustPressed(PSButtons.SQUARE));
         telemetry.addData("CIRCLE", gamePad.wasJustPressed(PSButtons.CIRCLE));
         telemetry.addData("CameraOn", cameraOn);
-        telemetry.addData("IsCentered", sensor.isCentered());
+        sensor.move();
 
         telemetry.update();
 

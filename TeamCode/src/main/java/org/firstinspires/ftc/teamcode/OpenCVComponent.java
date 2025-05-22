@@ -3,10 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -31,10 +35,12 @@ public class OpenCVComponent {
 
     private SamplePipeline currentPipeLine;
 
+    private MecanumDrive drive;
+
     MatOfPoint largestContour;
     boolean extending;
 
-    public OpenCVComponent(HardwareMap hardwareMap, String webcamID) {
+    public OpenCVComponent(HardwareMap hardwareMap, String webcamID, Motor[] motors) {
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
@@ -45,6 +51,12 @@ public class OpenCVComponent {
 
         webcam = OpenCvCameraFactory.getInstance().createWebcam(
                 hardwareMap.get(WebcamName.class, webcamID), cameraMonitorViewId);
+
+
+        motors[2].setInverted(true);
+
+        drive = new MecanumDrive(motors[0], motors[1], motors[2], motors[3]);
+
 
 
 
@@ -126,6 +138,12 @@ public class OpenCVComponent {
         webcam.setPipeline(bluePipeLine);
         currentPipeLine = bluePipeLine;
         telemetry.update();
+    }
+
+    public void move(){
+        if (!isCentered()){
+            drive.driveRobotCentric(0, -0.2, 0);
+        }
     }
 
 
