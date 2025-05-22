@@ -72,7 +72,11 @@ public class OpenCVTester extends OpMode {
         } else if (gamePad.wasJustPressed(PSButtons.CIRCLE)&&!cameraOn) {
             sensor.switchToRed();
             cameraOn = true;
-        }else if (gamePad.wasJustPressed(PSButtons.CIRCLE) || gamePad.wasJustPressed(PSButtons.SQUARE) && cameraOn){
+        }else if(gamePad.wasJustPressed(PSButtons.CROSS)&&!cameraOn){
+            sensor.switchToYellow();
+            cameraOn = true;
+        }
+        else if (gamePad.wasJustPressed(PSButtons.CIRCLE) || gamePad.wasJustPressed(PSButtons.SQUARE) && cameraOn){
             cameraOn = false;
             sensor.stopStreaming();
         }
