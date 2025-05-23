@@ -3,19 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.acmerobotics.dashboard.FtcDashboard;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.MatOfPoint;
 import org.opencv.imgproc.Imgproc;
@@ -102,7 +94,7 @@ public class OpenCVComponent {
         telemetry.update();
     }
 
-    public boolean isCentered() {
+    public void isCentered() {
         MatOfPoint contour = null;
         if (currentPipeLine == bluePipeLine) {
             contour = bluePipeLine.getLargestContour();
@@ -112,10 +104,10 @@ public class OpenCVComponent {
             contour = yellowPipeLine.getLargestContour();
         }
 
-        if (contour == null) return false;
+        if (contour == null) return;
 
         Moments moments = Imgproc.moments(contour);
-        if (moments.get_m00() == 0) return false;
+        if (moments.get_m00() == 0) return;
 
         if (largestContour != null) {
             telemetry.addData("Contour Area", Imgproc.contourArea(largestContour));
@@ -127,7 +119,9 @@ public class OpenCVComponent {
         // Avoid division by zero
 
         double centerX = moments.get_m10() / moments.get_m00();
-        return Math.abs(centerX - 320) <= 60;  // Center threshold with some tolerance
+        if (Math.abs(centerX - 320) >= 60){
+            drive.driveRobotCentric(0, -(centerX-320), 0);
+        }
     }
 
 
@@ -140,11 +134,7 @@ public class OpenCVComponent {
         telemetry.update();
     }
 
-    public void move(){
-        if (!isCentered()){
-            drive.driveRobotCentric(0, -0.2, 0);
-        }
-    }
+
 
 
 

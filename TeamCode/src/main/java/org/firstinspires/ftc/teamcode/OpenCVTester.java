@@ -74,7 +74,7 @@ public class OpenCVTester extends OpMode {
         telemetry.addData("SQUARE", gamePad.wasJustPressed(PSButtons.SQUARE));
         telemetry.addData("CIRCLE", gamePad.wasJustPressed(PSButtons.CIRCLE));
         telemetry.addData("CameraOn", cameraOn);
-        sensor.move();
+        sensor.isCentered();
 
         telemetry.update();
 
