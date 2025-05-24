@@ -24,8 +24,9 @@ public class MeepMeep2 {
 
         double startHeading = Math.toRadians(90);
 
-        double RsubTangent = Math.toRadians(90);
-        double RsubHeading = Math.toRadians(135);
+        double downTangent = Math.toRadians(270);
+        double upTangent = Math.toRadians(90);
+
         double Roriginal_x = 10;
         double Loriginal_x = -10;
         double loop_x = 39;
@@ -33,34 +34,39 @@ public class MeepMeep2 {
 
 
         Bot.runAction(Bot.getDrive().actionBuilder(new Pose2d(Loriginal_x, -56, startHeading))
-                .splineTo(new Vector2d(Loriginal_x, -34), startHeading)
-                .splineToConstantHeading(new Vector2d(-loop_x-9, -38), RsubTangent)
-                .splineToSplineHeading(new Pose2d(-55, -55, Math.toRadians(225)), RsubTangent)
-                .splineToSplineHeading(new Pose2d(-loop_x-20, -38, Math.toRadians(90)), RsubTangent)
-                .splineToSplineHeading(new Pose2d(-55, -55, Math.toRadians(225)), RsubTangent)
-                .splineToSplineHeading(new Pose2d(-57, -10, Math.toRadians(90)), RsubTangent)
-                .splineToConstantHeading(new Vector2d(-65, -55), RsubTangent)
+                .splineToConstantHeading(new Vector2d(Loriginal_x, -34), startHeading)
+                .splineToConstantHeading(new Vector2d(Loriginal_x, -40), startHeading)
+                .splineToConstantHeading(new Vector2d(-loop_x-9, -38), startHeading)
+                .splineToSplineHeading(new Pose2d(-55, -55, Math.toRadians(225)), startHeading)
+                .splineToSplineHeading(new Pose2d(-loop_x-20, -38, Math.toRadians(90)), startHeading)
+                .splineToSplineHeading(new Pose2d(-55, -55, Math.toRadians(225)), startHeading)
+                .splineToSplineHeading(new Pose2d(-57, -10, Math.toRadians(90)), startHeading)
+                .splineToConstantHeading(new Vector2d(-65, -55), startHeading)
                 .build());
 
 
         SpecBot.runAction(SpecBot.getDrive().actionBuilder(new Pose2d(Roriginal_x, -56, startHeading))
                 // First cycle
-                .splineTo(new Vector2d(Roriginal_x, -34), startHeading)
-                .splineToConstantHeading(new Vector2d(35, -40), RsubTangent)
-                .splineToConstantHeading(new Vector2d(loop_x, -10), RsubTangent)
-                .splineToConstantHeading(new Vector2d(loop_x+5, -55), RsubTangent)
-                .splineToConstantHeading(new Vector2d(loop_x+10, -10), RsubTangent)
-                .splineToConstantHeading(new Vector2d(loop_x+15, -55), RsubTangent)
-                .splineToConstantHeading(new Vector2d(loop_x+20, -10), RsubTangent)
-                .splineToConstantHeading(new Vector2d(loop_x+22, -55), RsubTangent)
-                .splineToSplineHeading(new Pose2d(loop_x+5,-55, Math.toRadians(270)), RsubTangent)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
+                .splineToSplineHeading(new Pose2d(Roriginal_x, -40, startHeading), downTangent)
+                .splineToConstantHeading(new Vector2d(35, -40), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x, -10), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+5, -55), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+10, -10), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+15, -55), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+20, -10), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+22, -55), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
                 // Second cycle
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), RsubHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5,-55, Math.toRadians(270)), RsubHeading)
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), RsubHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5,-55, Math.toRadians(270)), RsubHeading)
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), RsubHeading)
-                // Third cycle
+                .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
+                .splineToSplineHeading(new Pose2d(Roriginal_x, -40, startHeading), downTangent)
+                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
+                .splineToSplineHeading(new Pose2d(Roriginal_x, -40, startHeading), downTangent)
+                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
+                .splineToSplineHeading(new Pose2d(Roriginal_x, -40, startHeading), downTangent)
+                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
                 .build());
 
 
