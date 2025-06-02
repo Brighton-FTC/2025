@@ -16,14 +16,7 @@ public class ColorSensorTest extends OpMode {
     @Override
     public void init() {
 
-        Motor[] motors = {
-                new Motor(hardwareMap, "front_left_drive"),
-                new Motor(hardwareMap, "front_right_drive"),
-                new Motor(hardwareMap, "back_left_drive"),
-                new Motor(hardwareMap, "back_right_drive")
-        };
-
-        sensor = new ColorSensorComponent(hardwareMap, "sensor_color", motors);
+        sensor = new ColorSensorComponent(hardwareMap, "sensor_color");
         gamePad = new GamepadEx(gamepad1);
     }
 
@@ -33,14 +26,11 @@ public class ColorSensorTest extends OpMode {
 
 
         if (gamePad.wasJustPressed(PSButtons.SQUARE)) {
-            sensor.blueCheck();
-            sensor.runComponent();
-
+            telemetry.addData("Blue Detected:", sensor.blueDetected());
         }
 
         if (gamePad.wasJustPressed(PSButtons.CIRCLE)){
-            sensor.redCheck();
-            sensor.runComponent();
+            telemetry.addData("Red Detected:", sensor.redDetected());
 
         }
 

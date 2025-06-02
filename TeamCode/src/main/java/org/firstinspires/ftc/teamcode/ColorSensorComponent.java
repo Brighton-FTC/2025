@@ -16,32 +16,23 @@ public class ColorSensorComponent {
 
     double currentDistance;
 
-    private final MecanumDrive drive;
 
     double FinalEX;
 
-    public ColorSensorComponent(HardwareMap hardwareMap, String SensorID, Motor[] motors) {
+    public ColorSensorComponent(HardwareMap hardwareMap, String SensorID) {
 
 
-        for (Motor motor : motors) {
-            motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        }
-
-        motors[2].setInverted(true);
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, SensorID);
         colorSensor.setGain(2);
-        drive = new MecanumDrive(motors[0], motors[1], motors[2], motors[3]);
     }
 
     public void runComponent(){
         while(moving){
             for (double CurrentEX = 0; CurrentEX <= FinalEX;) {
                 while(currentDistance<=travelDistance) {
-                    drive.driveRobotCentric(0, -2, 0);
                     currentDistance+=2;
                 }
                 while(currentDistance<=travelDistance) {
-                    drive.driveRobotCentric(0, 2, 0);
                     currentDistance+=2;
                 }
             }
@@ -49,35 +40,25 @@ public class ColorSensorComponent {
         }
     }
 
-    public void blueCheck(){
-        moving = true;
-        while (moving) {
-            NormalizedRGBA colors = colorSensor.getNormalizedColors();
+    public boolean blueDetected(){
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
 
-            double blue = colors.blue;
+        double blue = colors.blue;
 
 
-            if (blue > 0.5) {
-                moving = false;
-            }
-
-        }
+        return blue > 0.5;
 
     }
 
-    public void redCheck(){
-        moving = true;
-        while (moving) {
-            NormalizedRGBA colors = colorSensor.getNormalizedColors();
+    public boolean redDetected(){
 
-            double red = colors.red;
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+
+        double red = colors.red;
 
 
-            if (red > 0.5) {
-                moving = false;
-            }
 
-        }
+        return red > 0.5;
 
     }
 
