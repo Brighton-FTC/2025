@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -60,6 +62,14 @@ public class ColorSensorComponent {
 
         return red > 0.5;
 
+    }
+
+    public void checkRed(){
+        telemetry.addData("Red Detected:", redDetected());
+    }
+
+    public void checkBlue(){
+        telemetry.addData("Blue Detected:", blueDetected());
     }
 
 
