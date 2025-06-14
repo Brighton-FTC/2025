@@ -18,22 +18,26 @@ public class ColorSensorTest extends OpMode {
 
     @Override
     public void init() {
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
         sensor = new ColorSensorComponent(hardwareMap, "sensor_color");
         gamePad = new GamepadEx(gamepad1);
         telemetry.addData("Initialised", "true");
+        telemetry.update();
     }
 
 
     @Override
     public void loop() {
+        sensor.runComponent();
         gamePad.readButtons();
 
         if (gamePad.wasJustPressed(PSButtons.SQUARE)) {
-            sensor.checkRed();
+            sensor.switchToRed();
         }
 
         if (gamePad.wasJustPressed(PSButtons.CIRCLE)){
-            sensor.checkBlue();
+            sensor.switchToBlue();
 
         }
 

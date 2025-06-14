@@ -8,69 +8,60 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.acmerobotics.dashboard.FtcDashboard;
 
 @Config
 public class ColorSensorComponent {
     private final NormalizedColorSensor colorSensor;
-    boolean moving;
 
-    double travelDistance;
+    String targetColor;
 
-    double currentDistance;
-
-
-    double FinalEX;
+    double BLUE_THRESHOLD = 0.05;
+    double RED_THRESHOLD = 0.05;
 
     public ColorSensorComponent(HardwareMap hardwareMap, String SensorID) {
 
-
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, SensorID);
         colorSensor.setGain(2);
     }
 
     public void runComponent(){
-        while(moving){
-            for (double CurrentEX = 0; CurrentEX <= FinalEX;) {
-                while(currentDistance<=travelDistance) {
-                    currentDistance+=2;
-                }
-                while(currentDistance<=travelDistance) {
-                    currentDistance+=2;
-                }
-            }
-            moving = false;
+        telemetry.addData("Raw Red", colorSensor.getNormalizedColors().red);
+        telemetry.addData("Raw Blue", colorSensor.getNormalizedColors().blue);
+        if ("red".equals(targetColor)){
+            telemetry.addData("Red Detected", redDetected());
+            telemetry.update();
+        } else if ("blue".equals(targetColor)) {
+            telemetry.addData("Blue Detected", blueDetected());
+            telemetry.update();
         }
+        else {
+            telemetry.addData("color detected", false);
+            telemetry.update();
+        }
+
     }
 
     public boolean blueDetected(){
-        NormalizedRGBA colors = colorSensor.getNormalizedColors();
-
-        double blue = colors.blue;
-
-
-        return blue > 0.5;
+        return colorSensor.getNormalizedColors().blue > BLUE_THRESHOLD;
 
     }
 
     public boolean redDetected(){
-
-        NormalizedRGBA colors = colorSensor.getNormalizedColors();
-
-        double red = colors.red;
-
-
-
-        return red > 0.5;
+        return colorSensor.getNormalizedColors().red > RED_THRESHOLD;
 
     }
 
-    public void checkRed(){
-        telemetry.addData("Red Detected:", redDetected());
+    public void switchToRed(){
+        targetColor = "red";
     }
 
-    public void checkBlue(){
-        telemetry.addData("Blue Detected:", blueDetected());
+    public void switchToBlue(){
+        targetColor = "blue";
     }
+
 
 
 }
