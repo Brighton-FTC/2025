@@ -7,29 +7,29 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class GrabberComponent {
-    public static double CLAW_TURN_AMOUNT = -1;
+    public static double CLAW_TURN_AMOUNT = 0.5;
 
 
-    private final Servo Claw;
+    private final Servo claw;
 
 
     public GrabberComponent(HardwareMap hardwareMap, String servoId) {
-        Claw = hardwareMap.servo.get(servoId);
-
+        claw = hardwareMap.servo.get(servoId);
+        claw.setDirection(Servo.Direction.REVERSE);
     }
 
     public void grab() {
-        Claw.setPosition(0);
+        claw.setPosition(0);
 
     }
 
     public void reset() {
-        Claw.setPosition(CLAW_TURN_AMOUNT);
+        claw.setPosition(CLAW_TURN_AMOUNT);
 
     }
 
     public void toggleClaw() {
-        if (Claw.getPosition() == 0) {
+        if (claw.getPosition() == 0) {
             reset();
         } else {
             grab();
@@ -39,11 +39,11 @@ public class GrabberComponent {
 
 
     public boolean isClosed() {
-        return Claw.getPosition() == 0;
+        return claw.getPosition() == 0;
     }
 
     public Servo getServo() {
-        return Claw;
+        return claw;
     }
 
 }
