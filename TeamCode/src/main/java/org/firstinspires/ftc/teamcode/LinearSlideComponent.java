@@ -9,13 +9,13 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 @Config
 public class LinearSlideComponent {
 
-    public static double kp = 0.005;
+    public static double kp = 0.0015;
 
     public static double ki = 0;
 
     public static double kd = 0;
 
-    public static double UP_POSITION = 0;
+    public static double UP_POSITION = 2000;
 
     public static double DOWN_POSITION = 0;
 
