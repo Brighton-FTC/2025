@@ -14,8 +14,6 @@ public class LinearSlideOpmode extends OpMode {
     private GamepadEx gamepad;
     private LinearSlideComponent linearSlide;
 
-    private boolean isRunningArm = true;
-
     @Override
     public void init() {
         linearSlide = new LinearSlideComponent(hardwareMap, "linear_slide_motor", "arm_sensor");
@@ -29,27 +27,16 @@ public class LinearSlideOpmode extends OpMode {
 
         if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
             linearSlide.up();
-            isRunningArm = true;
         } else if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
             linearSlide.down();
-            isRunningArm = true;
-
-        } else if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)) {
-            linearSlide.downToSwitch();
-            isRunningArm = true;
 
         } else if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
                 - gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) != 0) {
-            isRunningArm = false;
+            linearSlide.rawInput(gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
+                - gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
         }
 
-        if (isRunningArm) {
             linearSlide.run();
-        } else {
-            linearSlide.getMotor().set(gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
-                    - gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
-        }
-
         telemetry.addData("Position", linearSlide.getMotor().getCurrentPosition());
         telemetry.addData("Set point", linearSlide.getSetPoint());
         telemetry.addData("At Set-Point?", linearSlide.atSetPoint());

@@ -27,6 +27,8 @@ public class LinearSlideComponent {
 
     private boolean isrunningPID = true;
 
+    private double input = 0;
+
     public LinearSlideComponent(HardwareMap hardwareMap, String motorid, String touchSensorid) {
         slideMotor = new Motor(hardwareMap, motorid);
         touchSensor = hardwareMap.touchSensor.get(touchSensorid);
@@ -49,7 +51,8 @@ public class LinearSlideComponent {
             if (touchSensor.isPressed()) {
                 slideMotor.set(0);
             } else {
-                slideMotor.set(-0.5);
+                slideMotor.set(-input);
+                input = 0;
             }
         }
     }
@@ -64,8 +67,9 @@ public class LinearSlideComponent {
         controller.setSetPoint(DOWN_POSITION);
     }
 
-    public void downToSwitch() {
+    public void rawInput(double input) {
         isrunningPID = false;
+        this.input = input;
     }
 
     public Motor getMotor() {
