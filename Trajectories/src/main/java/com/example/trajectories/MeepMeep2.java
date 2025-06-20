@@ -56,16 +56,13 @@ public class MeepMeep2 {
                 .splineToConstantHeading(new Vector2d(loop_x+15, -55), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x+20, -10), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x+22, -55), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
+                .splineToSplineHeading(new Pose2d(loop_x+5,-55, downTangent), 0)
                 // Second cycle
-                .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -40, startHeading), downTangent)
-                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -40, startHeading), downTangent)
-                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -40, startHeading), downTangent)
+                .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), 0)
+                .splineToSplineHeading(new Pose2d(loop_x+5,-55, downTangent), 0)
+                .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), 0)
+                .splineToSplineHeading(new Pose2d(loop_x+5,-55, downTangent), 0)
+                .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), 0)
                 .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
                 .build());
 
