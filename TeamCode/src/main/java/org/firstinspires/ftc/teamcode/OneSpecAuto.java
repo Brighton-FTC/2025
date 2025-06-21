@@ -34,7 +34,7 @@ public class OneSpecAuto extends LinearOpMode {
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .afterDisp(0, linearSlide::up)
+                .afterDisp(5, linearSlide::up)
                 .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
                 .build();
 
