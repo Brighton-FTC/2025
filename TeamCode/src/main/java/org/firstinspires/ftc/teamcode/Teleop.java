@@ -72,12 +72,12 @@ public class Teleop extends OpMode {
                 )
         ));
 
-        horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
-        horizontalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        //horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
+        //horizontalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        intake = new IntakeComponent(hardwareMap, "intake_motor");
+        //intake = new IntakeComponent(hardwareMap, "intake_motor");
 
-        hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
+        //hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
     }
 
     @Override
@@ -121,7 +121,7 @@ public class Teleop extends OpMode {
         if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
             verticalSlide.up();
         } else if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
-            verticalSlide.run();
+            verticalSlide.down();
         }
 
         double rawInput = gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
@@ -145,48 +145,48 @@ public class Teleop extends OpMode {
         telemetry.addLine();
 
         // HORIZONTAL SLIDE
-        horizontalSlideMotor.set(gamepad2Ex.getLeftY()); // if this is too fast, might add a x0.75 multiplier or something
+        //horizontalSlideMotor.set(gamepad2Ex.getLeftY()); // if this is too fast, might add a x0.75 multiplier or something
 
         // INTAKE
 
         // forward
-        if (gamepad2Ex.wasJustPressed(PSButtons.TRIANGLE)) {
-            if (intake.getState() == IntakeComponent.State.FORWARD) {
-                intake.setState(IntakeComponent.State.STOPPED);
-            } else {
-                intake.setState(IntakeComponent.State.FORWARD);
-            }
-        }
+        //if (gamepad2Ex.wasJustPressed(PSButtons.TRIANGLE)) {
+            //if (intake.getState() == IntakeComponent.State.FORWARD) {
+                //intake.setState(IntakeComponent.State.STOPPED);
+            //} else {
+                //intake.setState(IntakeComponent.State.FORWARD);
+            //}
+        //}
 
         // reverse
-        if (gamepad2Ex.wasJustPressed(PSButtons.CIRCLE)) {
-            if (intake.getState() == IntakeComponent.State.REVERSE) {
-                intake.setState(IntakeComponent.State.STOPPED);
-            } else {
-                intake.setState(IntakeComponent.State.REVERSE);
-            }
-        }
+        //if (gamepad2Ex.wasJustPressed(PSButtons.CIRCLE)) {
+            //if (intake.getState() == IntakeComponent.State.REVERSE) {
+                //intake.setState(IntakeComponent.State.STOPPED);
+            //} else {
+                //intake.setState(IntakeComponent.State.REVERSE);
+            //}
+        //}
 
-        intake.run();
+        //intake.run();
 
-        telemetry.addData("Intake State", intake.getState().name());
+        //telemetry.addData("Intake State", intake.getState().name());
 
         // HANG
 
-        if (gamepad1Ex.wasJustPressed(PSButtons.CIRCLE)) {
-            hang.release();
-        }
+        //if (gamepad1Ex.wasJustPressed(PSButtons.CIRCLE)) {
+            //hang.release();
+        //}
 
-        if (gamepad1Ex.wasJustPressed(PSButtons.TRIANGLE)) {
-            isWinching = !isWinching;
-        }
+        //if (gamepad1Ex.wasJustPressed(PSButtons.TRIANGLE)) {
+            //isWinching = !isWinching;
+        //}
 
-        if (isWinching) {
-            hang.winch();
-        }
+        //if (isWinching) {
+            //hang.winch();
+        //}
 
-        telemetry.addLine(hang.isReleased() ? "Hang released" : "Hang not released");
-        telemetry.addLine(isWinching ? "Hang winching" : "Hang not winching");
-        telemetry.addLine(hang.atSetPoint() ? "Hang completed" : "Hang not completed");
+        //telemetry.addLine(hang.isReleased() ? "Hang released" : "Hang not released");
+        //telemetry.addLine(isWinching ? "Hang winching" : "Hang not winching");
+        //telemetry.addLine(hang.atSetPoint() ? "Hang completed" : "Hang not completed");
     }
 }
