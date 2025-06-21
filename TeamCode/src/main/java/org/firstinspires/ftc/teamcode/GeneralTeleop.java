@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -16,28 +15,29 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
 
 @Config
-@TeleOp(name = "Teleop", group = "competition")
-public class GeneralTeleop extends OpMode {
-    public static final double TURN_THRESHOLD = 0.1;
+@TeleOp(name = "Teleop (use this one)", group = "competition")
+public class Teleop extends OpMode {
     public static double SLOW_MODE_SPEED = 0.6;
+
 
     private MecanumDrive drive;
     private GamepadEx gamepad1Ex, gamepad2Ex;
-    private GamepadEx gamepad;
-    private IMU imu;
 
     private GrabberComponent grabber;
-    private LinearSlideComponent slide;
+    private LinearSlideComponent verticalSlide;
+
+    private Motor horizontalSlideMotor;
+
+    private IntakeComponent intake;
+
+    private HangComponent hang;
+    private boolean isWinching = false;
 
     private boolean isFieldCentric = true;
 
-    private boolean isRunningSlidePid = true;
-    private boolean isRunningHeadingPid = true;
-    private boolean servoUpdated = true;
     private double inputMultiplier = 1;
 
-    public static double kP = -0.035, kI = 0, kD = 0;
-    private final PIDController headingController = new PIDController(kP, kI, kD);
+    private IMU imu;
 
     private static double headingOffset = 0;
 
@@ -53,8 +53,6 @@ public class GeneralTeleop extends OpMode {
         gamepad1Ex = new GamepadEx(gamepad1);
         gamepad2Ex = new GamepadEx(gamepad2);
 
-        gamepad = gamepad1Ex;
-
         Motor[] motors = {
                 new Motor(hardwareMap, "front_left_drive"),
                 new Motor(hardwareMap, "front_right_drive"),
@@ -62,194 +60,140 @@ public class GeneralTeleop extends OpMode {
                 new Motor(hardwareMap, "back_right_drive")
         };
 
-        motors[1].setInverted(true);
-        motors[2].setInverted(true);
-        motors[3].setInverted(true);
+        for (Motor motor : motors) {
+            motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        }
 
-//        motors[0].setRunMode(Motor.RunMode.VelocityControl);
-//        motors[1].setRunMode(Motor.RunMode.VelocityControl);
+        motors[2].setInverted(true);
 
         drive = new MecanumDrive(motors[0], motors[1], motors[2], motors[3]);
+
+        verticalSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
+        grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(
                 new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                        RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
+                        RevHubOrientationOnRobot.UsbFacingDirection.LEFT // TODO: can't remember whether this was left or right, so change if necessary
                 )
         ));
 
-        imu.resetYaw();
-        headingController.setSetPoint(headingOffset);
+        horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
+        horizontalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        grabber = new GrabberComponent(hardwareMap, "left_claw_servo", "right_claw_servo", "rotator_servo");
+        intake = new IntakeComponent(hardwareMap, "intake_motor");
 
-        slide = new LinearSlideComponent(hardwareMap, "linear_slide_motor");
+        hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
     }
 
     @Override
     public void loop() {
-        headingController.setP(kP);
-
         gamepad1Ex.readButtons();
         gamepad2Ex.readButtons();
 
-        // grabber
-        if (gamepad.wasJustPressed(PSButtons.SQUARE)){
-            grabber.toggleClaw();
-        }
+        // DRIVETRAIN
 
-        if (gamepad.wasJustPressed(PSButtons.CIRCLE)){
-            grabber.toggleRotatorForward();
-        }
+        double yaw = imu.getRobotYawPitchRollAngles().getYaw();
 
-        // automatically update servo rotator position
-        if (!servoUpdated && isRunningSlidePid) {
-            // move the swing-arm forward only once the slide is up, but move it down as soon as the slide starts moving down
-            if (slide.getSetPoint() == LinearSlideComponent.UP_POSITION && slide.atSetPoint()) {
-                grabber.down(); // for some reason sometimes the swing-arm doesn't rotate unless you call this first
-                grabber.forward();
-                servoUpdated = true;
-
-            } else if (slide.getSetPoint() == LinearSlideComponent.UP_SPECIMEN_POSITION && slide.atSetPoint()) {
-                grabber.down();
-                grabber.scoreSpecimen();
-                servoUpdated = true;
-
-            } else if (slide.getSetPoint() == LinearSlideComponent.DOWN_POSITION) {
-                grabber.down();
-                servoUpdated = true;
-            }
-        }
-
-        // linear slide
-        if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
-            slide.up();
-            isRunningSlidePid = true;
-            servoUpdated = false;
-        } else if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
-            slide.down();
-            isRunningSlidePid = true;
-            servoUpdated = false;
-
-        } else if (gamepad.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
-            slide.upSpecimen();
-            isRunningSlidePid = true;
-            servoUpdated = false;
-
-        } else if (gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
-                - gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) != 0) {
-            isRunningSlidePid = false;
-        }
-
-        if (isRunningSlidePid) {
-            slide.run();
-        } else {
-            slide.getMotor().set(gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
-                    - gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
-        }
-
-        // drivetrain
-        double yaw = imu.getRobotYawPitchRollAngles().getYaw() + headingOffset;
-
-        if (gamepad.wasJustPressed(PSButtons.TRIANGLE)) {
+        if (gamepad1Ex.wasJustPressed(PSButtons.TRIANGLE)) {
             isFieldCentric = !isFieldCentric;
         }
 
-        if (gamepad.wasJustPressed(PSButtons.CROSS)) {
+        if (gamepad1Ex.wasJustPressed(PSButtons.CROSS)) {
             inputMultiplier = inputMultiplier == 1 ? SLOW_MODE_SPEED : 1;
         }
 
-        if (Math.abs(gamepad.getRightX()) > TURN_THRESHOLD || !isRunningHeadingPid) {
-            if (isFieldCentric) {
-                drive.driveFieldCentric(gamepad.getLeftX() * inputMultiplier,
-                        gamepad.getLeftY() * inputMultiplier,
-                        gamepad.getRightX() * inputMultiplier,
-                        yaw, true);
-            } else {
-                drive.driveRobotCentric(gamepad.getLeftX() * inputMultiplier,
-                        gamepad.getLeftY() * inputMultiplier,
-                        gamepad.getRightX() * inputMultiplier,
-                        true);
-
-                setHeadingOffset(imu.getRobotYawPitchRollAngles().getYaw()); // add a way to change heading offset.
-            }
-
-            headingController.setSetPoint(yaw);
-
+        if (isFieldCentric) {
+            drive.driveFieldCentric(gamepad1Ex.getLeftX() * inputMultiplier,
+                    gamepad1Ex.getLeftY() * inputMultiplier,
+                    gamepad1Ex.getRightX() * inputMultiplier,
+                    yaw, true);
         } else {
-            if (isFieldCentric) {
-                drive.driveFieldCentric(gamepad.getLeftX() * inputMultiplier,
-                        gamepad.getLeftY() * inputMultiplier,
-                        headingController.calculate(correctYaw(yaw, headingController.getSetPoint())),
-                        yaw, true);
-            } else {
-                drive.driveRobotCentric(gamepad.getLeftX() * inputMultiplier,
-                        gamepad.getLeftY() * inputMultiplier,
-                        headingController.calculate(correctYaw(yaw, headingController.getSetPoint())),
-                        true);
-            }
+            drive.driveRobotCentric(gamepad1Ex.getLeftX() * inputMultiplier,
+                    gamepad1Ex.getLeftY() * inputMultiplier,
+                    gamepad1Ex.getRightX() * inputMultiplier,
+                    true);
         }
-
-        // gamepad override
-        /*
-        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || gamepad2Ex.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
-            gamepad = gamepad == gamepad1Ex ? gamepad2Ex : gamepad1Ex; // switch control
-        }
-        */
-
-        // prepare for hang (disable heading PID and rotator servo)
-        if (gamepad.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
-            if (isRunningHeadingPid) {
-                grabber.getRotatorServo().getController().pwmDisable();
-                isRunningHeadingPid = false;
-            } else {
-                grabber.getRotatorServo().getController().pwmEnable();
-                isRunningHeadingPid = true;
-            }
-        }
-
-        telemetry.addData("Control", gamepad == gamepad1Ex ? "Gamepad 1" : "Gamepad 2");
-        telemetry.addLine();
 
         telemetry.addLine(isFieldCentric ? "Driving Field Centric" : "Driving Robot Centric");
         if (inputMultiplier == SLOW_MODE_SPEED) {
             telemetry.addLine("Slow Mode Activated");
         }
         telemetry.addData("Heading", yaw);
-        telemetry.addData("Target Heading", headingController.getSetPoint());
-        telemetry.addLine("Heading PID " + (isRunningHeadingPid ? "Enabled" : "Disabled"));
         telemetry.addLine();
 
-        telemetry.addData("Slide Position", slide.getMotor().getCurrentPosition());
-        telemetry.addData("Slide Set point", slide.getSetPoint());
-        telemetry.addData("Slide At Set-Point?", slide.atSetPoint());
-        telemetry.addLine();
+        // VERTICAL SLIDE
 
-        telemetry.addData("Grabber Status", grabber.isClosed() ? "Closed" : "Opened");
-        telemetry.addData("Grabber Rotator Status", grabber.isDown() ? "Down" : "Up");
-        telemetry.addLine();
-    }
-
-    // wraps yaw, in degrees
-    private double correctYaw(double yaw, double expectedYaw) {
-        while (expectedYaw - yaw > 180) {
-            yaw += 360;
+        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
+            verticalSlide.up();
+        } else if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
+            verticalSlide.run();
         }
 
-        while (expectedYaw - yaw < -180) {
-            yaw -= 360;
+        double rawInput = gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
+        if (rawInput != 0) {
+            verticalSlide.rawInput(rawInput);
         }
 
-        return yaw;
-    }
+        verticalSlide.run();
 
-    public static void setHeadingOffset(double headingOffset) {
-        GeneralTeleop.headingOffset = headingOffset;
-    }
+        telemetry.addData("Vertical Slide Pos", verticalSlide.getMotor().getCurrentPosition());
+        telemetry.addData("Vertical Slide Set-Point", verticalSlide.getSetPoint());
+        telemetry.addLine();
 
-    @Override
-    public void stop() {
-        setHeadingOffset(0); // reset heading offset after one run
+        // CLAW
+
+        if (gamepad2Ex.wasJustPressed(PSButtons.SQUARE)) {
+            grabber.toggleClaw();
+        }
+
+        telemetry.addLine(grabber.isClosed() ? "Grabber Closed" : "Grabber Open");
+        telemetry.addLine();
+
+        // HORIZONTAL SLIDE
+        horizontalSlideMotor.set(gamepad2Ex.getLeftY()); // if this is too fast, might add a x0.75 multiplier or something
+
+        // INTAKE
+
+        // forward
+        if (gamepad2Ex.wasJustPressed(PSButtons.TRIANGLE)) {
+            if (intake.getState() == IntakeComponent.State.FORWARD) {
+                intake.setState(IntakeComponent.State.STOPPED);
+            } else {
+                intake.setState(IntakeComponent.State.FORWARD);
+            }
+        }
+
+        // reverse
+        if (gamepad2Ex.wasJustPressed(PSButtons.CIRCLE)) {
+            if (intake.getState() == IntakeComponent.State.REVERSE) {
+                intake.setState(IntakeComponent.State.STOPPED);
+            } else {
+                intake.setState(IntakeComponent.State.REVERSE);
+            }
+        }
+
+        intake.run();
+
+        telemetry.addData("Intake State", intake.getState().name());
+
+        // HANG
+
+        if (gamepad1Ex.wasJustPressed(PSButtons.CIRCLE)) {
+            hang.release();
+        }
+
+        if (gamepad1Ex.wasJustPressed(PSButtons.TRIANGLE)) {
+            isWinching = !isWinching;
+        }
+
+        if (isWinching) {
+            hang.winch();
+        }
+
+        telemetry.addLine(hang.isReleased() ? "Hang released" : "Hang not released");
+        telemetry.addLine(isWinching ? "Hang winching" : "Hang not winching");
+        telemetry.addLine(hang.atSetPoint() ? "Hang completed" : "Hang not completed");
     }
 }
