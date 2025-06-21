@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 @Config
 @Autonomous(name = "Specimen Autonomous", preselectTeleOp = "Teleop")
 public class OneSpecAuto extends LinearOpMode {
-    public static double startX = 0;
     public static double startY = 0;
     double startHeading = Math.toRadians(90);
 
@@ -27,24 +26,24 @@ public class OneSpecAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(startX, startY, startHeading));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(Roriginal_x, startY, startHeading));
 
-        LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "linear_slide_motor");
+        LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "linear_slide_motor", "linear_slide_sensor");
 
-        GrabberComponent grabber = new GrabberComponent(hardwareMap, "left_claw_servo", "right_claw_servo", "rotator_servo");
-        grabber.tilt();
 
-        Action startToSub = drive.actionBuilder(new Pose2d(startX, startY, startHeading))
+        GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
+
+        Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
                 .afterDisp(0, linearSlide::up)
                 .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
-                .afterDisp(10, linearSlide::down)
                 .build();
 
-        Action scoreSpecimen = new InstantAction(() -> {
+        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
+                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
+                .build();
 
-        });
 
-        grabber.grab();
+        grabber.toggleClaw();
 
         waitForStart();
 
@@ -56,11 +55,9 @@ public class OneSpecAuto extends LinearOpMode {
         }).start();
 
         Actions.runBlocking(startToSub);
-        Actions.runBlocking(scoreSpecimen);
         Actions.runBlocking(new InstantAction(linearSlide::down));
-        Actions.runBlocking(new SleepAction(5));
-        Actions.runBlocking(new InstantAction(grabber::reset));
-        Actions.runBlocking(new SleepAction(5));
+        Actions.runBlocking(new InstantAction(grabber::toggleClaw));
+        Actions.runBlocking(startToPark);
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
 }

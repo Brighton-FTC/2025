@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
 
 @Config
 @TeleOp(name = "Teleop (use this one)", group = "competition")
-public class Teleop extends OpMode {
+public class GeneralTeleop extends OpMode {
     public static double SLOW_MODE_SPEED = 0.6;
 
 

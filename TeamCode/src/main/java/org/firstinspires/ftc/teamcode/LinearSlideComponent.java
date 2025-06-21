@@ -19,8 +19,6 @@ public class LinearSlideComponent {
     public static double UP_POSITION = 2000;
 
     public static double DOWN_POSITION = 0;
-    public static double UP_SPECIMEN_POSITION = 2500;
-
     public static double TOLERANCE = 25;
 
     private PIDController controller = new PIDController(0, 0, 0);

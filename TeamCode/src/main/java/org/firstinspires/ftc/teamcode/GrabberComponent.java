@@ -37,15 +37,6 @@ public class GrabberComponent {
     }
 
 
-
-    public void toggleRotatorUp() {
-        if (isDown()) {
-            scoreSpecimen();
-        } else {
-            down();
-        }
-    }
-
     public boolean isClosed() {
         return claw.getPosition() == 0;
     }
