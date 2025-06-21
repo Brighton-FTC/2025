@@ -26,6 +26,13 @@ public class Teleop extends OpMode {
     private GrabberComponent grabber;
     private LinearSlideComponent verticalSlide;
 
+    private Motor horizontalSlideMotor;
+
+    private IntakeComponent intake;
+
+    private HangComponent hang;
+    private boolean isWinching = false;
+
     private boolean isFieldCentric = true;
 
     private double inputMultiplier = 1;
@@ -60,10 +67,17 @@ public class Teleop extends OpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(
                 new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.LEFT
+                        RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
+                        RevHubOrientationOnRobot.UsbFacingDirection.LEFT // TODO: can't remember whether this was left or right, so change if necessary
                 )
         ));
+
+        horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
+        horizontalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        intake = new IntakeComponent(hardwareMap, "intake_motor");
+
+        hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
     }
 
     @Override
@@ -71,7 +85,7 @@ public class Teleop extends OpMode {
         gamepad1Ex.readButtons();
         gamepad2Ex.readButtons();
 
-        // drivetrain
+        // DRIVETRAIN
 
         double yaw = imu.getRobotYawPitchRollAngles().getYaw();
 
@@ -102,7 +116,7 @@ public class Teleop extends OpMode {
         telemetry.addData("Heading", yaw);
         telemetry.addLine();
 
-        // vertical slide
+        // VERTICAL SLIDE
 
         if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
             verticalSlide.up();
@@ -121,7 +135,7 @@ public class Teleop extends OpMode {
         telemetry.addData("Vertical Slide Set-Point", verticalSlide.getSetPoint());
         telemetry.addLine();
 
-        // claw
+        // CLAW
 
         if (gamepad2Ex.wasJustPressed(PSButtons.SQUARE)) {
             grabber.toggleClaw();
@@ -129,5 +143,50 @@ public class Teleop extends OpMode {
 
         telemetry.addLine(grabber.isClosed() ? "Grabber Closed" : "Grabber Open");
         telemetry.addLine();
+
+        // HORIZONTAL SLIDE
+        horizontalSlideMotor.set(gamepad2Ex.getLeftY()); // if this is too fast, might add a x0.75 multiplier or something
+
+        // INTAKE
+
+        // forward
+        if (gamepad2Ex.wasJustPressed(PSButtons.TRIANGLE)) {
+            if (intake.getState() == IntakeComponent.State.FORWARD) {
+                intake.setState(IntakeComponent.State.STOPPED);
+            } else {
+                intake.setState(IntakeComponent.State.FORWARD);
+            }
+        }
+
+        // reverse
+        if (gamepad2Ex.wasJustPressed(PSButtons.CIRCLE)) {
+            if (intake.getState() == IntakeComponent.State.REVERSE) {
+                intake.setState(IntakeComponent.State.STOPPED);
+            } else {
+                intake.setState(IntakeComponent.State.REVERSE);
+            }
+        }
+
+        intake.run();
+
+        telemetry.addData("Intake State", intake.getState().name());
+
+        // HANG
+
+        if (gamepad1Ex.wasJustPressed(PSButtons.CIRCLE)) {
+            hang.release();
+        }
+
+        if (gamepad1Ex.wasJustPressed(PSButtons.TRIANGLE)) {
+            isWinching = !isWinching;
+        }
+
+        if (isWinching) {
+            hang.winch();
+        }
+
+        telemetry.addLine(hang.isReleased() ? "Hang released" : "Hang not released");
+        telemetry.addLine(isWinching ? "Hang winching" : "Hang not winching");
+        telemetry.addLine(hang.atSetPoint() ? "Hang completed" : "Hang not completed");
     }
 }
