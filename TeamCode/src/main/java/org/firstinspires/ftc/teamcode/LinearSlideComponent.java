@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-
 @Config
 public class LinearSlideComponent {
 
@@ -19,7 +18,6 @@ public class LinearSlideComponent {
     public static double UP_POSITION = 2000;
 
     public static double DOWN_POSITION = 0;
-    public static double TOLERANCE = 25;
 
     private PIDController controller = new PIDController(0, 0, 0);
 
