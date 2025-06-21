@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 @Config
 @Autonomous(name = "2 Specimen Autonomous", preselectTeleOp = "Teleop")
 public class TwoSpecAuto extends LinearOpMode {
-    public static double startY = 0;
+    public static double startY = -56;
     double startHeading = Math.toRadians(90);
 
     double downTangent = Math.toRadians(270);

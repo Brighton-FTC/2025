@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 @Config
 @Autonomous(name = "1 Specimen Autonomous", preselectTeleOp = "Teleop")
 public class OneSpecAuto extends LinearOpMode {
-    public static double startY = 0;
+    public static double startY = -56;
     double startHeading = Math.toRadians(90);
 
     double downTangent = Math.toRadians(270);
@@ -56,6 +56,7 @@ public class OneSpecAuto extends LinearOpMode {
 
         Actions.runBlocking(startToSub);
         Actions.runBlocking(new InstantAction(linearSlide::down));
+        Actions.runBlocking(new SleepAction(0.5));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
         Actions.runBlocking(startToPark);
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
