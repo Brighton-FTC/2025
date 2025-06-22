@@ -62,20 +62,20 @@ public class ThreeSpecAuto extends LinearOpMode {
 
         Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, startHeading))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), 0)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+2, -34, startHeading), 0)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action specCycleN = drive.actionBuilder(new Pose2d(Roriginal_x, -34, startHeading))
+        Action specCycleN = drive.actionBuilder(new Pose2d(Roriginal_x+2, -34, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .splineToSplineHeading(new Pose2d(loop_x+5,startY+5, downTangent), 0)
                 .afterDisp(0, grabber::toggleClaw)
                 .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x, subY, startHeading), 0)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY, startHeading), 0)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
+        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x+4, startY, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .afterDisp(0, grabber::toggleClaw)
                 .splineToConstantHeading(new Vector2d(loop_x+5,startY), startHeading)
