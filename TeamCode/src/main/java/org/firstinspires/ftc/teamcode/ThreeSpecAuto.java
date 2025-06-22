@@ -42,16 +42,16 @@ public class ThreeSpecAuto extends LinearOpMode {
 
         Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
                 .afterDisp(0, linearSlide::down)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, -60), startHeading)
+                .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
                 .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
                 .build();
 
 // Second spike
         Action cycle2 = drive.actionBuilder(new Pose2d(loop_x + 13, -60, startHeading))
-                
+
                 .splineToConstantHeading(new Vector2d(loop_x + 13, -19), startHeading)
-                
+
                 .splineToConstantHeading(new Vector2d(loop_x + 23, -60), startHeading)
                 .build();
 
@@ -59,24 +59,24 @@ public class ThreeSpecAuto extends LinearOpMode {
         Action cycle3 = drive.actionBuilder(new Pose2d(loop_x + 23, -60, startHeading))
                 .splineToConstantHeading(new Vector2d(loop_x + 24, -19), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x + 33, -60), startHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5, startY-20, downTangent), 0)
+                .splineToSplineHeading(new Pose2d(loop_x+5, startY-20, downTangent), 90)
                 .build();
 
         Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, -34, startHeading), 270)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+2, -34, startHeading), 0)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
         Action specCycleN = drive.actionBuilder(new Pose2d(Roriginal_x+2, -34, startHeading))
-                .afterDisp(0, linearSlide::down)
-                
+                .afterTime(1, linearSlide::down)
+
                 .splineToSplineHeading(new Pose2d(loop_x+5,startY-24, downTangent), 0)
-                
+
                 .afterDisp(0, grabber::toggleClaw)
                 .afterTime(1, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY, startHeading), 270)
-                
+
                 .afterDisp(0, linearSlide::score)
                 .build();
 
@@ -84,7 +84,7 @@ public class ThreeSpecAuto extends LinearOpMode {
                 .afterDisp(0, linearSlide::down)
                 .afterDisp(0, grabber::toggleClaw)
                 .splineToConstantHeading(new Vector2d(loop_x+5,startY), startHeading)
-                
+
                 .build();
 
 
