@@ -19,7 +19,7 @@ public class LinearSlideComponent {
 
     public static double DOWN_POSITION = 0;
 
-    public static double SCORE_POSITION = 1800;
+    public static double SCORE_POSITION = 1500;
 
     private PIDController controller = new PIDController(0, 0, 0);
 

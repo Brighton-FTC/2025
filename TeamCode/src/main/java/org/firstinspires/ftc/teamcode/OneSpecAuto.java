@@ -56,8 +56,9 @@ public class OneSpecAuto extends LinearOpMode {
         Actions.runBlocking(new InstantAction(linearSlide::score));
         Actions.runBlocking(new SleepAction(0.3));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
-        Actions.runBlocking(startToPark);
+        Actions.runBlocking(new InstantAction(linearSlide::down));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
+        Actions.runBlocking(startToPark);
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
 }

@@ -82,6 +82,7 @@ public class TwoSpecAuto extends LinearOpMode {
         Actions.runBlocking(new InstantAction(linearSlide::score));
         Actions.runBlocking(new SleepAction(0.5));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
+        Actions.runBlocking(new InstantAction(linearSlide::down));
         Actions.runBlocking(subToSpike);
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
 
@@ -89,6 +90,7 @@ public class TwoSpecAuto extends LinearOpMode {
         Actions.runBlocking(new InstantAction(linearSlide::score));
         Actions.runBlocking(new SleepAction(0.5));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
+        Actions.runBlocking(new InstantAction(linearSlide::down));
         Actions.runBlocking(startToPark);
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
