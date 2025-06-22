@@ -64,13 +64,13 @@ public final class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = 0.002;
-        public double lateralInPerTick =  0.001688620350152394;
-        public double trackWidthTicks =  3098.054232121056;
+        public double lateralInPerTick =  0.0013106575040060609;
+        public double trackWidthTicks =  6386.742091369983;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.7800182159184512;
-        public double kV = 0.0005624108371709618;
-        public double kA = 0.00008;
+        public double kS = 1.6895812528154428;
+        public double kV = 0.00027428233543838593;
+        public double kA = 0.0000487651;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -82,9 +82,9 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 2.0;
-        public double lateralGain = 3.0;
-        public double headingGain = 3.0; // shared with turn
+        public double axialGain = 10.0;
+        public double lateralGain = 2.0;
+        public double headingGain = 3; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -135,6 +135,7 @@ public final class MecanumDrive {
             leftBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftBack));
             rightBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
             rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
+
 
             imu = lazyImu.get();
 
