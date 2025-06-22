@@ -42,8 +42,8 @@ public class testing extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(loop_x,startY), startHeading)
                 .build();
 
-        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, startHeading))
-                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
+        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
+                .splineToSplineHeading(new Pose2d(Roriginal_x, subY, downTangent), 0)
                 .build();
 
         //just repeat this for the rest of the spec cycle
@@ -53,22 +53,22 @@ public class testing extends LinearOpMode {
                 .build();
 
         Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x + 10, -48), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, -48), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x + 10, -19), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x + 12, -65), startHeading)
                 .build();
 
 // Second spike
         Action cycle2 = drive.actionBuilder(new Pose2d(loop_x + 12, -65, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x + 19, -19), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 24, -65), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 18, -19), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 20, -65), startHeading)
                 .build();
 
 // Third spike
-        Action cycle3 = drive.actionBuilder(new Pose2d(loop_x + 24, -65, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x + 31, -19), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 36, -65), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x+5, startY), startHeading)
+        Action cycle3 = drive.actionBuilder(new Pose2d(loop_x + 20, -65, startHeading))
+                .splineToConstantHeading(new Vector2d(loop_x + 28, -19), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 30, -65), startHeading)
+                .splineToSplineHeading(new Pose2d(loop_x+5, startY, downTangent), 0)
                 .build();
 
 
@@ -77,7 +77,7 @@ public class testing extends LinearOpMode {
 
         //Actions.runBlocking(testTurn);
 
-        Actions.runBlocking(new SequentialAction(startToSub, new SleepAction(0.1), cycle1, cycle2, cycle3, specCycle1));
+        Actions.runBlocking(new SequentialAction(startToSub, cycle1, cycle2, cycle3, specCycle1, specCycleN, subToPark));
 
     }
 }
