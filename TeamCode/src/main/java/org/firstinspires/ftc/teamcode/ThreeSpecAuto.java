@@ -13,8 +13,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 
 @Config
-@Autonomous(name = "2 Specimen Autonomous", preselectTeleOp = "Teleop")
-public class TwoSpecAuto extends LinearOpMode {
+@Autonomous(name = "3 Specimen Autonomous", preselectTeleOp = "Teleop")
+public class ThreeSpecAuto extends LinearOpMode {
     public static double startY = -72;
     double startHeading = Math.toRadians(90);
 
@@ -93,7 +93,7 @@ public class TwoSpecAuto extends LinearOpMode {
             }
         }).start();
 
-        Actions.runBlocking(new SequentialAction(startToSub, new InstantAction(grabber::toggleClaw), cycle1, cycle2, cycle3, new InstantAction(grabber::toggleClaw), specCycle1, new InstantAction(grabber::toggleClaw), startToPark));
+        Actions.runBlocking(new SequentialAction(startToSub, new InstantAction(grabber::toggleClaw), cycle1, cycle2, cycle3, new InstantAction(grabber::toggleClaw), specCycle1, new InstantAction(grabber::toggleClaw), specCycleN, new InstantAction(grabber::toggleClaw), startToPark));
 
 
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
