@@ -15,14 +15,12 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 @Config
 @Autonomous(name = "1 Specimen Autonomous", preselectTeleOp = "Teleop")
 public class OneSpecAuto extends LinearOpMode {
-    public static double startY = -56;
-    double startHeading = Math.toRadians(0);
-
-    double downTangent = Math.toRadians(180);
+    public static double startY = -72;
+    double startHeading = Math.toRadians(90);
 
     double Roriginal_x = 10;
-    double Loriginal_x = -10;
-    double loop_x = 39;
+    double subY = -38;
+    double loop_x = 36;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -35,11 +33,11 @@ public class OneSpecAuto extends LinearOpMode {
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
                 .afterDisp(10, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, 34), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
                 .build();
 
-        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
+        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
+                .splineToConstantHeading(new Vector2d(loop_x+10,startY+7), startHeading)
                 .build();
 
 
@@ -56,7 +54,7 @@ public class OneSpecAuto extends LinearOpMode {
 
         Actions.runBlocking(startToSub);
         Actions.runBlocking(new InstantAction(linearSlide::down));
-        Actions.runBlocking(new SleepAction(0.5));
+        Actions.runBlocking(new SleepAction(0.3));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
         Actions.runBlocking(startToPark);
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());

@@ -15,14 +15,15 @@ import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 @Config
 @Autonomous(name = "2 Specimen Autonomous", preselectTeleOp = "Teleop")
 public class TwoSpecAuto extends LinearOpMode {
-    public static double startY = -56;
+    public static double startY = -72;
     double startHeading = Math.toRadians(90);
 
     double downTangent = Math.toRadians(270);
 
     double Roriginal_x = 10;
-    double Loriginal_x = -10;
-    double loop_x = 39;
+    double subY = -38;
+    double loop_x = 36;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,35 +35,35 @@ public class TwoSpecAuto extends LinearOpMode {
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .afterDisp(0, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, -34), startHeading)
+                .afterDisp(10, linearSlide::up)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
                 .build();
 
-        Action subToSpike = drive.actionBuilder(new Pose2d(Roriginal_x, -34, startHeading))
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -40, startHeading), downTangent)
-                .splineToConstantHeading(new Vector2d(35, -40), startHeading)
+        Action subToSpike = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
+                .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
+                .splineToConstantHeading(new Vector2d(36, -48), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x, -10), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x+5, -55), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+5, startY+7), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x+10, -10), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x+15, -55), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+15, startY+7), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x+20, -10), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x+22, -55), startHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5,-55, downTangent), 0)
+                .splineToConstantHeading(new Vector2d(loop_x+22, startY+7), startHeading)
+                .splineToSplineHeading(new Pose2d(loop_x+5,startY+7, downTangent), 0)
                 .build();
 
-        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, -55, startHeading))
+        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY+7, startHeading))
                 .afterDisp(10, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), 0)
                 .build();
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(Roriginal_x, -34, startHeading))
-                .splineToSplineHeading(new Pose2d(loop_x+5,-55, downTangent), 0)
+                .splineToSplineHeading(new Pose2d(loop_x+5,startY+7, downTangent), 0)
                 .afterDisp(10, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), 0)
                 .build();
 
         Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x+5,-55), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+5,startY+7), startHeading)
                 .build();
 
 
