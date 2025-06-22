@@ -37,7 +37,7 @@ public class OneSpecAuto extends LinearOpMode {
                 .build();
 
         Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x+10,startY+7), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+10,startY), startHeading)
                 .build();
 
 
@@ -53,10 +53,11 @@ public class OneSpecAuto extends LinearOpMode {
         }).start();
 
         Actions.runBlocking(startToSub);
-        Actions.runBlocking(new InstantAction(linearSlide::down));
+        Actions.runBlocking(new InstantAction(linearSlide::score));
         Actions.runBlocking(new SleepAction(0.3));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
         Actions.runBlocking(startToPark);
+        Actions.runBlocking(new InstantAction(grabber::toggleClaw));
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
 }

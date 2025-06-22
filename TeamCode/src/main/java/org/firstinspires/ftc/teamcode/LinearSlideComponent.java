@@ -19,6 +19,8 @@ public class LinearSlideComponent {
 
     public static double DOWN_POSITION = 0;
 
+    public static double SCORE_POSITION = 1800;
+
     private PIDController controller = new PIDController(0, 0, 0);
 
     private Motor slideMotor;
@@ -67,6 +69,10 @@ public class LinearSlideComponent {
         controller.setSetPoint(DOWN_POSITION);
     }
 
+    public void score() {
+        isrunningPID = true;
+        controller.setSetPoint(SCORE_POSITION);
+    }
     public void rawInput(double input) {
         isrunningPID = false;
         this.input = input;

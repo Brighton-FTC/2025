@@ -43,27 +43,27 @@ public class TwoSpecAuto extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
                 .splineToConstantHeading(new Vector2d(36, -48), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x, -10), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x+5, startY+7), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+5, startY), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x+10, -10), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x+15, startY+7), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+15, startY), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x+20, -10), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x+22, startY+7), startHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5,startY+7, downTangent), 0)
+                .splineToConstantHeading(new Vector2d(loop_x+22, startY), startHeading)
+                .splineToSplineHeading(new Pose2d(loop_x+5,startY, downTangent), 0)
                 .build();
 
-        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY+7, startHeading))
+        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, startHeading))
                 .afterDisp(10, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), 0)
                 .build();
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(Roriginal_x, -34, startHeading))
-                .splineToSplineHeading(new Pose2d(loop_x+5,startY+7, downTangent), 0)
+                .splineToSplineHeading(new Pose2d(loop_x+5,startY, downTangent), 0)
                 .afterDisp(10, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), 0)
                 .build();
 
         Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x+5,startY+7), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+5,startY), startHeading)
                 .build();
 
 
@@ -79,14 +79,14 @@ public class TwoSpecAuto extends LinearOpMode {
         }).start();
 
         Actions.runBlocking(startToSub);
-        Actions.runBlocking(new InstantAction(linearSlide::down));
+        Actions.runBlocking(new InstantAction(linearSlide::score));
         Actions.runBlocking(new SleepAction(0.5));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
         Actions.runBlocking(subToSpike);
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
 
         Actions.runBlocking(specCycle1);
-        Actions.runBlocking(new InstantAction(linearSlide::down));
+        Actions.runBlocking(new InstantAction(linearSlide::score));
         Actions.runBlocking(new SleepAction(0.5));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
         Actions.runBlocking(startToPark);
