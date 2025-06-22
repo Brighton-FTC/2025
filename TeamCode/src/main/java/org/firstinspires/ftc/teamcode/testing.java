@@ -13,8 +13,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.util.roadrunner.MecanumDrive;
 
 @Config
-@Autonomous(name = "1 Specimen Autonomous", preselectTeleOp = "Teleop")
-public class OneSpecAuto extends LinearOpMode {
+@Autonomous(name = "trajectory test", preselectTeleOp = "Teleop")
+public class testing extends LinearOpMode {
     public static double startY = -56;
     double startHeading = Math.toRadians(0);
 
@@ -28,14 +28,11 @@ public class OneSpecAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(Roriginal_x, startY, startHeading));
 
-        LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
 
 
-        GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .afterDisp(10, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, 34), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, -50), startHeading)
                 .build();
 
         Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
@@ -43,22 +40,11 @@ public class OneSpecAuto extends LinearOpMode {
                 .build();
 
 
-        grabber.toggleClaw();
 
         waitForStart();
 
-        new Thread(() -> {
-            while (!isStopRequested()) {
-                linearSlide.run();
-                sleep(20);
-            }
-        }).start();
 
         Actions.runBlocking(startToSub);
-        Actions.runBlocking(new InstantAction(linearSlide::down));
-        Actions.runBlocking(new SleepAction(0.5));
-        Actions.runBlocking(new InstantAction(grabber::toggleClaw));
-        Actions.runBlocking(startToPark);
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
 }

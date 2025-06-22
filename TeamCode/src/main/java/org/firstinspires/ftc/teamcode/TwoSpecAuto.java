@@ -28,7 +28,7 @@ public class TwoSpecAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(Roriginal_x, startY, startHeading));
 
-        LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "linear_slide_motor", "linear_slide_sensor");
+        LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
 
 
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
@@ -47,10 +47,10 @@ public class TwoSpecAuto extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(loop_x+15, -55), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x+20, -10), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x+22, -55), startHeading)
+                .splineToSplineHeading(new Pose2d(loop_x+5,-55, downTangent), 0)
                 .build();
 
         Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, -55, startHeading))
-                .splineToSplineHeading(new Pose2d(loop_x+5,-55, downTangent), 0)
                 .afterDisp(10, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -34, startHeading), 0)
                 .build();
@@ -82,6 +82,8 @@ public class TwoSpecAuto extends LinearOpMode {
         Actions.runBlocking(new SleepAction(0.5));
         Actions.runBlocking(new InstantAction(grabber::toggleClaw));
         Actions.runBlocking(subToSpike);
+        Actions.runBlocking(new InstantAction(grabber::toggleClaw));
+
         Actions.runBlocking(specCycle1);
         Actions.runBlocking(new InstantAction(linearSlide::down));
         Actions.runBlocking(new SleepAction(0.5));
