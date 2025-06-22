@@ -42,43 +42,49 @@ public class ThreeSpecAuto extends LinearOpMode {
 
         Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
                 .afterDisp(0, linearSlide::down)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, -48), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 10, -19), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 12, -65), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, -60), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
                 .build();
 
 // Second spike
-        Action cycle2 = drive.actionBuilder(new Pose2d(loop_x + 12, -65, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x + 19, -19), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 24, -65), startHeading)
+        Action cycle2 = drive.actionBuilder(new Pose2d(loop_x + 13, -60, startHeading))
+                
+                .splineToConstantHeading(new Vector2d(loop_x + 13, -19), startHeading)
+                
+                .splineToConstantHeading(new Vector2d(loop_x + 23, -60), startHeading)
                 .build();
 
 // Third spike
-        Action cycle3 = drive.actionBuilder(new Pose2d(loop_x + 24, -65, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x + 31, -19), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 36, -65), startHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5, startY, downTangent), 0)
+        Action cycle3 = drive.actionBuilder(new Pose2d(loop_x + 23, -60, startHeading))
+                .splineToConstantHeading(new Vector2d(loop_x + 24, -19), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 33, -60), startHeading)
+                .splineToSplineHeading(new Pose2d(loop_x+5, startY-20, downTangent), 0)
                 .build();
 
-        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, startHeading))
+        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, -34, startHeading), 0)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+2, -34, startHeading), 270)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
         Action specCycleN = drive.actionBuilder(new Pose2d(Roriginal_x+2, -34, startHeading))
                 .afterDisp(0, linearSlide::down)
-                .splineToSplineHeading(new Pose2d(loop_x+5,startY+5, downTangent), 0)
+                
+                .splineToSplineHeading(new Pose2d(loop_x+5,startY-24, downTangent), 0)
+                
                 .afterDisp(0, grabber::toggleClaw)
                 .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY, startHeading), 0)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY, startHeading), 270)
+                
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x+4, startY, startHeading))
+        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x+4, subY, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .afterDisp(0, grabber::toggleClaw)
                 .splineToConstantHeading(new Vector2d(loop_x+5,startY), startHeading)
+                
                 .build();
 
 
@@ -93,7 +99,7 @@ public class ThreeSpecAuto extends LinearOpMode {
             }
         }).start();
 
-        Actions.runBlocking(new SequentialAction(startToSub, new InstantAction(grabber::toggleClaw), cycle1, cycle2, cycle3, new InstantAction(grabber::toggleClaw), specCycle1, new InstantAction(grabber::toggleClaw), specCycleN, new InstantAction(grabber::toggleClaw), startToPark));
+        Actions.runBlocking(new SequentialAction(startToSub, new InstantAction(grabber::toggleClaw), cycle1, cycle2, new InstantAction(grabber::toggleClaw), specCycle1, new InstantAction(grabber::toggleClaw), specCycleN, new InstantAction(grabber::toggleClaw), startToPark));
 
 
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
