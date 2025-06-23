@@ -21,8 +21,8 @@ public class TwoSpecAuto extends LinearOpMode {
     double downTangent = Math.toRadians(270);
 
     double Roriginal_x = 10;
-    double subY = -35;
-    double loop_x = 36;
+    double subY = -40;
+    double loop_x = 42;
 
 
     @Override
@@ -40,47 +40,20 @@ public class TwoSpecAuto extends LinearOpMode {
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
+
+        Action specCycleN = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
                 .afterDisp(0, linearSlide::down)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, -60), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
-                .build();
-
-// Second spike
-        Action cycle2 = drive.actionBuilder(new Pose2d(loop_x + 13, -60, startHeading))
-
-                .splineToConstantHeading(new Vector2d(loop_x + 13, -19), startHeading)
-
-                .splineToConstantHeading(new Vector2d(loop_x + 23, -60), startHeading)
-                .build();
-
-// Third spike
-        Action cycle3 = drive.actionBuilder(new Pose2d(loop_x + 23, -60, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x + 24, -19), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 33, -60), startHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5, startY-20, downTangent), 0)
-                .build();
-
-        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
-                .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, -34, startHeading), 270)
-                .afterDisp(0, linearSlide::score)
-                .build();
-
-        Action specCycleN = drive.actionBuilder(new Pose2d(Roriginal_x+2, -34, startHeading))
-                .afterDisp(0, linearSlide::down)
-                .splineToSplineHeading(new Pose2d(loop_x+5,startY+5, downTangent), 0)
+                .splineToSplineHeading(new Pose2d(loop_x,startY, downTangent), 0)
                 .afterDisp(0, grabber::toggleClaw)
                 .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY, startHeading), 0)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY, startHeading), 270)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x+4, startY, startHeading))
+        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x+2, startY, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .afterDisp(0, grabber::toggleClaw)
-                .splineToConstantHeading(new Vector2d(loop_x+5,startY), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x,startY), startHeading)
                 .build();
 
 

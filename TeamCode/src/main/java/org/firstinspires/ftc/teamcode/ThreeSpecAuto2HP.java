@@ -21,8 +21,8 @@ public class ThreeSpecAuto2HP extends LinearOpMode {
     double downTangent = Math.toRadians(270);
 
     double Roriginal_x = 10;
-    double subY = -35;
-    double loop_x = 36;
+    double subY = -40;
+    double loop_x = 42;
 
 
     @Override
@@ -35,43 +35,28 @@ public class ThreeSpecAuto2HP extends LinearOpMode {
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .afterDisp(10, linearSlide::up)
+                .afterDisp(0, linearSlide::up)
                 .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
-                .afterDisp(0, linearSlide::down)
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
-                .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
-                .build();
 
-// Second spike
-        Action cycle2 = drive.actionBuilder(new Pose2d(loop_x + 13, -60, startHeading))
+        Action specCycle2 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
+                .afterTime(1, linearSlide::down)
 
-                .splineToConstantHeading(new Vector2d(loop_x + 13, -19), startHeading)
+                .splineToSplineHeading(new Pose2d(loop_x,startY, downTangent), 0)
 
-                .splineToConstantHeading(new Vector2d(loop_x + 23, -60), startHeading)
-                .build();
+                .afterDisp(0, grabber::toggleClaw)
+                .afterTime(1, linearSlide::up)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY, startHeading), 270)
 
-// Third spike
-        Action cycle3 = drive.actionBuilder(new Pose2d(loop_x + 23, -60, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x + 24, -19), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 33, -60), startHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5, startY-20, downTangent), 90)
-                .build();
-
-        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
-                .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, -34, startHeading), 0)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action specCycle2 = drive.actionBuilder(new Pose2d(Roriginal_x+2, -34, startHeading))
+        Action specCycle3 = drive.actionBuilder(new Pose2d(Roriginal_x+2, subY, startHeading))
                 .afterTime(1, linearSlide::down)
 
-                .splineToSplineHeading(new Pose2d(loop_x+5,startY-24, downTangent), 0)
+                .splineToSplineHeading(new Pose2d(loop_x,startY, downTangent), 0)
 
                 .afterDisp(0, grabber::toggleClaw)
                 .afterTime(1, linearSlide::up)
@@ -80,22 +65,10 @@ public class ThreeSpecAuto2HP extends LinearOpMode {
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action specCycle3 = drive.actionBuilder(new Pose2d(Roriginal_x+2, -34, startHeading))
-                .afterTime(1, linearSlide::down)
-
-                .splineToSplineHeading(new Pose2d(loop_x+5,startY-24, downTangent), 0)
-
-                .afterDisp(0, grabber::toggleClaw)
-                .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+6, subY, startHeading), 270)
-
-                .afterDisp(0, linearSlide::score)
-                .build();
-
         Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x+4, subY, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .afterDisp(0, grabber::toggleClaw)
-                .splineToConstantHeading(new Vector2d(loop_x+5,startY), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x,startY), startHeading)
 
                 .build();
 

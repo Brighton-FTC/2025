@@ -21,7 +21,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
     double downTangent = Math.toRadians(270);
 
     double Roriginal_x = 10;
-    double subY = -35;
+    double subY = -40;
     double loop_x = 36;
 
 
@@ -40,30 +40,30 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
+        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x+2, subY, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
                 .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5, startY-20, downTangent), 90)
+                .splineToSplineHeading(new Pose2d(loop_x+5, startY, downTangent), 90)
                 .build();
 
 
 
         Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, -34, startHeading), 0)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY, startHeading), 0)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action specCycle2 = drive.actionBuilder(new Pose2d(Roriginal_x+2, -34, startHeading))
+        Action specCycle2 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
                 .afterTime(1, linearSlide::down)
 
                 .splineToSplineHeading(new Pose2d(loop_x+5,startY-24, downTangent), 0)
 
                 .afterDisp(0, grabber::toggleClaw)
                 .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY, startHeading), 270)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY, startHeading), 270)
 
                 .afterDisp(0, linearSlide::score)
                 .build();
