@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
 
+import kotlin.math.UMathKt;
+
 @Config
 @TeleOp(name = "Teleop (use this one)", group = "competition")
 public class Teleop extends OpMode {
@@ -153,16 +155,17 @@ public class Teleop extends OpMode {
 
 //         vertical SLIDE
         if (verticalSlideMotor.getCurrentPosition() < VERTICAL_SLIDE_UPPER_LIMIT) {
-                verticalSlideMotor.set(gamepad2Ex.getLeftY()); // if this is too fast, might add a x0.75 multiplier or something
+            verticalSlideMotor.set(gamepad2Ex.getLeftY()); // if this is too fast, might add a x0.75 multiplier or something
         }
 
 
         // horizontal slide
-
+        // Check if above motor limit
         if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_EXTENSION_LIMIT) {
             horizontalSlideMotor.set(gamepad2Ex.getRightY()); // if this is too fast, might add a x0.75 multiplier or something
+        } else {
+            horizontalSlideMotor.set(-Math.abs(gamepad2Ex.getRightY())) // TODO: This assumes that negative motor power moves it DOWN. If that's wrong, CHANGE IT!!!
         }
-
         // INTAKE
 
         // forward
