@@ -24,9 +24,9 @@ public class Teleop extends OpMode {
     private GamepadEx gamepad1Ex, gamepad2Ex;
 
     private GrabberComponent grabber;
-    private LinearSlideComponent verticalSlide;
 
     private Motor horizontalSlideMotor;
+    private Motor verticalSlideMotor;
 
     private IntakeComponent intake;
 
@@ -38,6 +38,10 @@ public class Teleop extends OpMode {
     private double inputMultiplier = 1;
 
     private IMU imu;
+
+    public static final int HORIZONTAL_SLIDE_EXTENSION_LIMIT = 2000;
+    public static final int VERTICAL_SLIDE_UPPER_LIMIT = 2000;
+//    public static final int VERTICAL_SLIDE__LIMIT = 2000;
 
     @Override
     public void init() {
@@ -61,7 +65,7 @@ public class Teleop extends OpMode {
 
         drive = new MecanumDrive(motors[0], motors[1], motors[2], motors[3]);
 
-        verticalSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
+//        verticalSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
         grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -72,12 +76,15 @@ public class Teleop extends OpMode {
                 )
         ));
 
-        //horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
-        //horizontalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
+        horizontalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        verticalSlideMotor = new Motor(hardwareMap, "vertical_slide_motor");
+        verticalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         //intake = new IntakeComponent(hardwareMap, "intake_motor");
 
-        //hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
+        hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
     }
 
     @Override
@@ -118,22 +125,22 @@ public class Teleop extends OpMode {
 
         // VERTICAL SLIDE
 
-        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
-            verticalSlide.up();
-        } else if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
-            verticalSlide.down();
-        }
+//        if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
+//            verticalSlide.up();
+//        } else if (gamepad2Ex.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
+//            verticalSlide.down();
+//        }
+//
+//        double rawInput = gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
+//        if (rawInput != 0) {
+//            verticalSlide.rawInput(rawInput);
+//        }
+//
+//        verticalSlide.run();
 
-        double rawInput = gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
-        if (rawInput != 0) {
-            verticalSlide.rawInput(rawInput);
-        }
-
-        verticalSlide.run();
-
-        telemetry.addData("Vertical Slide Pos", verticalSlide.getMotor().getCurrentPosition());
-        telemetry.addData("Vertical Slide Set-Point", verticalSlide.getSetPoint());
-        telemetry.addLine();
+//        telemetry.addData("Vertical Slide Pos", verticalSlide.getMotor().getCurrentPosition());
+//        telemetry.addData("Vertical Slide Set-Point", verticalSlide.getSetPoint());
+//        telemetry.addLine();
 
         // CLAW
 
@@ -144,8 +151,17 @@ public class Teleop extends OpMode {
         telemetry.addLine(grabber.isClosed() ? "Grabber Closed" : "Grabber Open");
         telemetry.addLine();
 
-        // HORIZONTAL SLIDE
-        //horizontalSlideMotor.set(gamepad2Ex.getLeftY()); // if this is too fast, might add a x0.75 multiplier or something
+//         vertical SLIDE
+        if (verticalSlideMotor.getCurrentPosition() < VERTICAL_SLIDE_UPPER_LIMIT) {
+                verticalSlideMotor.set(gamepad2Ex.getLeftY()); // if this is too fast, might add a x0.75 multiplier or something
+        }
+
+
+        // horizontal slide
+
+        if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_EXTENSION_LIMIT) {
+            horizontalSlideMotor.set(gamepad2Ex.getRightY()); // if this is too fast, might add a x0.75 multiplier or something
+        }
 
         // INTAKE
 
@@ -171,22 +187,30 @@ public class Teleop extends OpMode {
 
         //telemetry.addData("Intake State", intake.getState().name());
 
-        // HANG
+//         HANG
 
-        //if (gamepad1Ex.wasJustPressed(PSButtons.CIRCLE)) {
-            //hang.release();
-        //}
+        if (gamepad1Ex.wasJustPressed(PSButtons.CIRCLE)) {
+            hang.release();
+        }
 
-        //if (gamepad1Ex.wasJustPressed(PSButtons.TRIANGLE)) {
-            //isWinching = !isWinching;
-        //}
+        if (gamepad1Ex.wasJustPressed(PSButtons.TRIANGLE)) {
+            isWinching = !isWinching;
+        }
 
-        //if (isWinching) {
-            //hang.winch();
-        //}
+        if (gamepad1Ex.wasJustPressed(PSButtons.CROSS)) {
+            hang.unwinch();
+        }
 
-        //telemetry.addLine(hang.isReleased() ? "Hang released" : "Hang not released");
-        //telemetry.addLine(isWinching ? "Hang winching" : "Hang not winching");
-        //telemetry.addLine(hang.atSetPoint() ? "Hang completed" : "Hang not completed");
+        if (isWinching) {
+            hang.winch();
+        }
+
+        if (gamepad1Ex.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
+            hang.returnToOriginal();
+        }
+
+        telemetry.addLine(hang.isReleased() ? "Hang released" : "Hang not released");
+        telemetry.addLine(isWinching ? "Hang winching" : "Hang not winching");
+        telemetry.addLine(hang.atSetPoint() ? "Hang completed" : "Hang not completed");
     }
 }
