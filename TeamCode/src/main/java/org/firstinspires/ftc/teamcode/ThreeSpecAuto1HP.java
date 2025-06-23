@@ -21,7 +21,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
     double downTangent = Math.toRadians(270);
 
     double Roriginal_x = 10;
-    double subY = -38;
+    double subY = -35;
     double loop_x = 36;
 
 
