@@ -22,6 +22,7 @@ import kotlin.math.UMathKt;
 public class Teleop extends OpMode {
     public static double SLOW_MODE_SPEED = 0.6;
 
+    boolean hsServoRotated = false;
 
     private MecanumDrive drive;
     private GamepadEx gamepad1Ex, gamepad2Ex;
@@ -99,7 +100,7 @@ public class Teleop extends OpMode {
 //        verticalSlideMotor = new Motor(hardwareMap, "vertical_slide_motor");
 //        verticalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        intake = new IntakeComponent(hardwareMap, "intake_motor");
+        intake = new IntakeComponent(hardwareMap, "intake_motor", "intake_servo");
 
         hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
 
@@ -265,6 +266,15 @@ public class Teleop extends OpMode {
             } else {
                 intake.setState(IntakeComponent.State.REVERSE);
             }
+        }
+
+        //turn servo\
+        if (gamepad2Ex.wasJustPressed(PSButtons.SQUARE) && !hsServoRotated){
+            intake.turnServo(0.5);
+            hsServoRotated = true;
+        }else if (gamepad2Ex.wasJustPressed(PSButtons.SQUARE)&& hsServoRotated){
+            intake.turnServo(-0.5);
+            hsServoRotated = false;
         }
 
         intake.run();
