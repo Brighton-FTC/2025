@@ -152,10 +152,12 @@ public class Teleop extends OpMode {
             sensor.switchToRed();
             cameraOn = true;
         }
-
-        if (gamepad1Ex.wasJustPressed(PSButtons.SQUARE)&& !cameraOn){
+        else if (gamepad1Ex.wasJustPressed(PSButtons.SQUARE)&& !cameraOn){
             sensor.switchToBlue();
             cameraOn = true;
+        }else if(gamepad1Ex.wasJustPressed(PSButtons.CROSS) || gamepad1Ex.wasJustPressed(PSButtons.SQUARE) &&cameraOn) {
+            cameraOn = false;
+            sensor.stopStreaming();
         }
 
 
