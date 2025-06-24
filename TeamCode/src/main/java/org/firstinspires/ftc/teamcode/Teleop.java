@@ -149,17 +149,17 @@ public class Teleop extends OpMode {
         telemetry.addLine();
 
         //OpenCV Sample Detection (red)
-        if (gamepad1Ex.wasJustPressed(PSButtons.CROSS) && !cameraOn){
-            sensor.switchToRed();
-            cameraOn = true;
-        }
-        else if (gamepad1Ex.wasJustPressed(PSButtons.SQUARE)&& !cameraOn){
-            sensor.switchToBlue();
-            cameraOn = true;
-        }else if(gamepad1Ex.wasJustPressed(PSButtons.CROSS) || gamepad1Ex.wasJustPressed(PSButtons.SQUARE) &&cameraOn) {
-            cameraOn = false;
-            sensor.stopStreaming();
-        }
+        //if (gamepad1Ex.wasJustPressed(PSButtons.CROSS) && !cameraOn){
+          //  sensor.switchToRed();
+            //cameraOn = true;
+        //}
+        //else if (gamepad1Ex.wasJustPressed(PSButtons.SQUARE)&& !cameraOn){
+          //  sensor.switchToBlue();
+            //cameraOn = true;
+       // }else if(gamepad1Ex.wasJustPressed(PSButtons.CROSS) || gamepad1Ex.wasJustPressed(PSButtons.SQUARE) &&cameraOn) {
+         //   cameraOn = false;
+           // sensor.stopStreaming();
+        //}
 
 
         // VERTICAL SLIDE
