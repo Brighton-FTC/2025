@@ -11,6 +11,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
 
@@ -43,9 +44,10 @@ public class Teleop extends OpMode {
 
     private IMU imu;
 
-    public static final int HORIZONTAL_SLIDE_EXTENSION_LIMIT = 2000;
-//    public static final int VERTICAL_SLIDE_UPPER_LIMIT = 2000;
-//    public static final int VERTICAL_SLIDE__LIMIT = 2000;
+    public static final int HORIZONTAL_SLIDE_EXTENSION_LIMIT = -750;
+    public static final int HORIZONTAL_SLIDE_RETRACT_LIMIT = 0;
+    public static final int VERTICAL_SLIDE_UPPER_LIMIT = 2000;
+    public static final int VERTICAL_SLIDE_LOWER_LIMIT = 250;
 
     @Override
     public void init() {
@@ -82,11 +84,12 @@ public class Teleop extends OpMode {
 
         horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
         horizontalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        horizontalSlideMotor.resetEncoder();
 
 //        verticalSlideMotor = new Motor(hardwareMap, "vertical_slide_motor");
 //        verticalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        //intake = new IntakeComponent(hardwareMap, "intake_motor");
+        intake = new IntakeComponent(hardwareMap, "intake_motor");
 
         hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
     }
@@ -136,9 +139,46 @@ public class Teleop extends OpMode {
 //        }
 //
 //        double rawInput = gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
-        if (gamepad2Ex.getLeftY() != 0) {
-            verticalSlide.rawInput(gamepad2Ex.getLeftY());
+//        if (verticalSlide.getMotor().getCurrentPosition() < VERTICAL_SLIDE_UPPER_LIMIT) {
+//            verticalSlide.rawInput(-gamepad2Ex.getLeftY()); // negative goes up
+//        } else {
+//
+//            verticalSlide.rawInput(Range.clip(-gamepad2Ex.getLeftY(), 0, 1.0)); // TODO: This assumes that negative motor power moves it DOWN. If that's wrong, CHANGE IT!!!
+//        }
+
+        //if (verticalSlide.getMotor().getCurrentPosition() > VERTICAL_SLIDE_UPPER_LIMIT) {
+            //telemetry.addData("past limit", True);
+            //verticalSlide.rawInput(Range.clip(gamepad2Ex.getLeftY(), 0, 1.0)); // TODO: This assumes that negative motor power moves it DOWN. If that's wrong, CHANGE IT!!!
+        //} else if (verticalSlide.getMotor().getCurrentPosition() < VERTICAL_SLIDE_LOWER_LIMIT) {
+            //verticalSlide.rawInput(Range.clip(gamepad2Ex.getLeftY(), -1, 0)); // negative goes up
+//        if (verticalSlide.getMotor().getCurrentPosition() > VERTICAL_SLIDE_LOWER_LIMIT) {
+//            verticalSlide.rawInput(-gamepad2Ex.getLeftY()); // negative goes up
+//        }
+//        else{
+//            verticalSlide.rawInput(Range.clip(-gamepad2Ex.getLeftY(), -1, 0));
+//        }
+//        if (verticalSlide.getMotor().getCurrentPosition() < VERTICAL_SLIDE_UPPER_LIMIT && verticalSlide.getMotor().getCurrentPosition() > VERTICAL_SLIDE_LOWER_LIMIT){
+//            verticalSlide.rawInput(-gamepad2Ex.getLeftY()); // negative goes up
+//        //} else if (verticalSlide.getMotor().getCurrentPosition() < VERTICAL_SLIDE_UPPER_LIMIT) {
+//            //verticalSlide.rawInput(Range.clip(-gamepad2Ex.getLeftY(), 0, 1.0)); // negative goes up
+//        } else { // position is bigger than lower
+//            //verticalSlide.rawInput(Range.clip(-gamepad2Ex.getLeftY(), -1, 0)); // negative goes up
+//        }
+
+        double P2LS = gamepad2Ex.getLeftY(); // negative goes up, positive goes down
+        double deadZone = 0.2;
+
+        verticalSlide.rawInput(0);
+
+        // if negative input has large enough magnitude and slide is not lower than lower limit
+        if (P2LS < -deadZone && verticalSlide.getMotor().getCurrentPosition() > VERTICAL_SLIDE_LOWER_LIMIT) {
+            verticalSlide.rawInput(1); // go down
+        } // if positive input has large enough magnitude and slide is not higher than upper limit
+        else if (P2LS > deadZone && verticalSlide.getMotor().getCurrentPosition() < VERTICAL_SLIDE_UPPER_LIMIT) {
+            verticalSlide.rawInput(-1); // up
         }
+
+
 
         verticalSlide.run();
 
@@ -166,33 +206,39 @@ public class Teleop extends OpMode {
         // horizontal slide
         // Check if above motor limit
         if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_EXTENSION_LIMIT) {
-            horizontalSlideMotor.set(gamepad2Ex.getRightY()); // if this is too fast, might add a x0.75 multiplier or something
+            horizontalSlideMotor.set(Range.clip(gamepad2Ex.getRightY() * 0.5, -1.0, 0)); // joystick up, or positive is extension
+        } else if (horizontalSlideMotor.getCurrentPosition() > HORIZONTAL_SLIDE_RETRACT_LIMIT) {
+            horizontalSlideMotor.set(Range.clip(gamepad2Ex.getRightY() * 0.5, 0, 1)); // joystick up, or positive is extension
         } else {
-            horizontalSlideMotor.set(-Math.abs(gamepad2Ex.getRightY())); // TODO: This assumes that negative motor power moves it DOWN. If that's wrong, CHANGE IT!!!
+            horizontalSlideMotor.set(gamepad2Ex.getRightY() * 0.5); // joystick up, or positive is extension
         }
+
+        telemetry.addData("Horizontal Slide Pos", horizontalSlideMotor.getCurrentPosition());
+        telemetry.addLine();
+
         // INTAKE
 
         // forward
-        //if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0) {
-            //if (intake.getState() == IntakeComponent.State.FORWARD) {
-                //intake.setState(IntakeComponent.State.STOPPED);
-            //} else {
-                //intake.setState(IntakeComponent.State.FORWARD);
-            //}
-        //}
+        if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0) {
+            if (intake.getState() == IntakeComponent.State.FORWARD) {
+                intake.setState(IntakeComponent.State.STOPPED);
+            } else {
+                intake.setState(IntakeComponent.State.FORWARD);
+            }
+        }
 
         // reverse
-        //if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0) {
-            //if (intake.getState() == IntakeComponent.State.REVERSE) {
-                //intake.setState(IntakeComponent.State.STOPPED);
-            //} else {
-                //intake.setState(IntakeComponent.State.REVERSE);
-            //}
-        //}
+        if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0) {
+            if (intake.getState() == IntakeComponent.State.REVERSE) {
+                intake.setState(IntakeComponent.State.STOPPED);
+            } else {
+                intake.setState(IntakeComponent.State.REVERSE);
+            }
+        }
 
-        //intake.run();
+        intake.run();
 
-        //telemetry.addData("Intake State", intake.getState().name());
+        telemetry.addData("Intake State", intake.getState().name());
 
 //         HANG
 
