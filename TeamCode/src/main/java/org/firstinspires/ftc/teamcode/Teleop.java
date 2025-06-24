@@ -164,7 +164,7 @@ public class Teleop extends OpMode {
         if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_EXTENSION_LIMIT) {
             horizontalSlideMotor.set(gamepad2Ex.getRightY()); // if this is too fast, might add a x0.75 multiplier or something
         } else {
-            horizontalSlideMotor.set(-Math.abs(gamepad2Ex.getRightY())) // TODO: This assumes that negative motor power moves it DOWN. If that's wrong, CHANGE IT!!!
+            horizontalSlideMotor.set(-Math.abs(gamepad2Ex.getRightY())); // TODO: This assumes that negative motor power moves it DOWN. If that's wrong, CHANGE IT!!!
         }
         // INTAKE
 
