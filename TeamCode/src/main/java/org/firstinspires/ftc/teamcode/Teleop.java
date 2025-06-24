@@ -90,7 +90,7 @@ public class Teleop extends OpMode {
         ));
 
 
-        sensor = new OpenCVComponent(hardwareMap, "Webcam 1", motors);
+        //sensor = new OpenCVComponent(hardwareMap, "Webcam 1", motors);
 
 
         horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
