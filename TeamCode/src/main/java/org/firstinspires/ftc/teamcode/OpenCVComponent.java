@@ -120,7 +120,7 @@ public class OpenCVComponent {
 
         double centerX = moments.get_m10() / moments.get_m00();
         if (Math.abs(centerX - 320) >= 60){
-            drive.driveRobotCentric(0, 0, -1*((centerX-320)/centerX-320));
+            drive.driveRobotCentric(-1*((centerX-320)/centerX-320), 0, 0);
         }
     }
 
