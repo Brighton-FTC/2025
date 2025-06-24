@@ -28,6 +28,10 @@ public class Teleop extends OpMode {
 
     private GrabberComponent grabber;
 
+    private OpenCVComponent sensor;
+
+    boolean cameraOn = false;
+
     private Motor horizontalSlideMotor;
 //    private Motor verticalSlideMotor;
 
@@ -80,6 +84,8 @@ public class Teleop extends OpMode {
                         RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
                         RevHubOrientationOnRobot.UsbFacingDirection.LEFT // TODO: can't remember whether this was left or right, so change if necessary
                 )
+
+
         ));
 
         horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
@@ -92,6 +98,11 @@ public class Teleop extends OpMode {
         intake = new IntakeComponent(hardwareMap, "intake_motor");
 
         hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
+
+
+        sensor = new OpenCVComponent(hardwareMap, "Webcam 1", motors);
+
+
     }
 
     @Override
@@ -129,6 +140,12 @@ public class Teleop extends OpMode {
         }
         telemetry.addData("Heading", yaw);
         telemetry.addLine();
+
+        //OpenCV Sample Detection
+        if (gamepad1Ex.wasJustPressed(PSButtons.CROSS)){
+
+        }
+
 
         // VERTICAL SLIDE
 
