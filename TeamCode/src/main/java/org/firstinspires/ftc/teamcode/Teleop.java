@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Math.abs;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -17,6 +19,24 @@ import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
 
 import kotlin.math.UMathKt;
 
+/**
+ * Drive: D1 Left Joystick
+ * Field Centric: D1 TRIANGLE
+ * Slowmode: D1 CIRCLE
+ * Hang release: D1 LEFT
+ * Hang winch (climb): D1 left bumper
+ * Hang unwinch: D1 right bumper
+ * Hang return to start: D1 RIGHT
+ * Drive inverted (no turning): D1 SQUARE
+ *
+ * Claw: D2 R1
+ * Vert Slide Up/Down: D2 LS (Y axis)
+ * Hor Slide For/Back: D2 RS (Y axis)
+ * Intake In: D2 R2
+ * Intake Out: D2 L2
+ *
+ *
+ */
 @Config
 @TeleOp(name = "Teleop (use this one)", group = "competition")
 public class Teleop extends OpMode {
@@ -44,7 +64,7 @@ public class Teleop extends OpMode {
 
     private IMU imu;
 
-    public static final int HORIZONTAL_SLIDE_EXTENSION_LIMIT = -750;
+    public static final int HORIZONTAL_SLIDE_EXTENSION_LIMIT = -1050;
     public static final int HORIZONTAL_SLIDE_RETRACT_LIMIT = 0;
     public static final int VERTICAL_SLIDE_UPPER_LIMIT = 2000;
     public static final int VERTICAL_SLIDE_LOWER_LIMIT = 250;
@@ -111,15 +131,19 @@ public class Teleop extends OpMode {
             inputMultiplier = inputMultiplier == 1 ? SLOW_MODE_SPEED : 1;
         }
 
+        if (gamepad1Ex.wasJustPressed(PSButtons.SQUARE)) {
+            inputMultiplier *= -1;
+        }
+
         if (isFieldCentric) {
             drive.driveFieldCentric(gamepad1Ex.getLeftX() * inputMultiplier,
                     gamepad1Ex.getLeftY() * inputMultiplier,
-                    gamepad1Ex.getRightX() * inputMultiplier,
+                    gamepad1Ex.getRightX() * abs(inputMultiplier),
                     yaw, true);
         } else {
             drive.driveRobotCentric(gamepad1Ex.getLeftX() * inputMultiplier,
                     gamepad1Ex.getLeftY() * inputMultiplier,
-                    gamepad1Ex.getRightX() * inputMultiplier,
+                    gamepad1Ex.getRightX() * abs(inputMultiplier),
                     true);
         }
 
@@ -203,37 +227,42 @@ public class Teleop extends OpMode {
 //        }
 
 
-        // horizontal slide
-        // Check if above motor limit
-        if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_EXTENSION_LIMIT) {
-            horizontalSlideMotor.set(Range.clip(gamepad2Ex.getRightY() * 0.5, -1.0, 0)); // joystick up, or positive is extension
-        } else if (horizontalSlideMotor.getCurrentPosition() > HORIZONTAL_SLIDE_RETRACT_LIMIT) {
-            horizontalSlideMotor.set(Range.clip(gamepad2Ex.getRightY() * 0.5, 0, 1)); // joystick up, or positive is extension
-        } else {
-            horizontalSlideMotor.set(gamepad2Ex.getRightY() * 0.5); // joystick up, or positive is extension
+//        // horizontal slide
+//        // Check if above motor limit
+//        if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_EXTENSION_LIMIT) {
+//            horizontalSlideMotor.set(Range.clip(gamepad2Ex.getRightY() * 0.5, -1.0, 0)); // joystick up, or positive is extension
+//        } else if (horizontalSlideMotor.getCurrentPosition() > HORIZONTAL_SLIDE_RETRACT_LIMIT) {
+//            horizontalSlideMotor.set(Range.clip(gamepad2Ex.getRightY() * 0.5, 0, 1)); // joystick up, or positive is extension
+//        } else {
+//            horizontalSlideMotor.set(gamepad2Ex.getRightY() * 0.5); // joystick up, or positive is extension
+//        }
+
+        double P2RS = gamepad2Ex.getRightY(); // joystick up, or positive is extension
+        double deadZoneHorizontal = 0.2;
+
+        horizontalSlideMotor.set(0);
+
+        // if negative input has large enough magnitude and slide is not lower than lower limit
+        if (abs(P2RS) > 0.2) {
+            if (P2RS < 0 && horizontalSlideMotor.getCurrentPosition() > HORIZONTAL_SLIDE_EXTENSION_LIMIT) {
+                horizontalSlideMotor.set(P2RS);
+            } // if positive input has large enough magnitude and slide is not higher than upper limit
+            else if (P2RS > 0 && horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_RETRACT_LIMIT) {
+                horizontalSlideMotor.set(P2RS);
+            }
         }
 
         telemetry.addData("Horizontal Slide Pos", horizontalSlideMotor.getCurrentPosition());
         telemetry.addLine();
 
         // INTAKE
-
+        intake.setState(IntakeComponent.State.STOPPED);
         // forward
-        if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0) {
-            if (intake.getState() == IntakeComponent.State.FORWARD) {
-                intake.setState(IntakeComponent.State.STOPPED);
-            } else {
-                intake.setState(IntakeComponent.State.FORWARD);
-            }
+        if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.3) {
+            intake.setState(IntakeComponent.State.FORWARD);
         }
-
-        // reverse
-        if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0) {
-            if (intake.getState() == IntakeComponent.State.REVERSE) {
-                intake.setState(IntakeComponent.State.STOPPED);
-            } else {
-                intake.setState(IntakeComponent.State.REVERSE);
-            }
+        if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3) {
+            intake.setState(IntakeComponent.State.REVERSE);
         }
 
         intake.run();
@@ -242,12 +271,12 @@ public class Teleop extends OpMode {
 
 //         HANG
 
-        if (gamepad1Ex.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
+        if (gamepad1Ex.isDown(GamepadKeys.Button.DPAD_LEFT) && gamepad1Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3) {
             hang.release();
         }
 
-        if (gamepad1Ex.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
-            isWinching = !isWinching;
+        if (gamepad1Ex.isDown(GamepadKeys.Button.LEFT_BUMPER) && gamepad1Ex.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3) {
+            hang.winch();
         }
 
         if (gamepad1Ex.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
@@ -258,7 +287,7 @@ public class Teleop extends OpMode {
             hang.winch();
         }
 
-        if (gamepad1Ex.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)) {
+        if (gamepad1Ex.isDown(GamepadKeys.Button.DPAD_RIGHT)) {
             hang.returnToOriginal();
         }
 
