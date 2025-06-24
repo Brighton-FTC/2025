@@ -48,6 +48,10 @@ public class Teleop extends OpMode {
 
     private GrabberComponent grabber;
 
+    private OpenCVComponent sensor;
+
+    boolean cameraOn = false;
+
     private Motor horizontalSlideMotor;
 //    private Motor verticalSlideMotor;
 
@@ -100,7 +104,13 @@ public class Teleop extends OpMode {
                         RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
                         RevHubOrientationOnRobot.UsbFacingDirection.LEFT // TODO: can't remember whether this was left or right, so change if necessary
                 )
+
+
         ));
+
+
+        sensor = new OpenCVComponent(hardwareMap, "Webcam 1", motors);
+
 
         horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
         horizontalSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -112,12 +122,19 @@ public class Teleop extends OpMode {
         intake = new IntakeComponent(hardwareMap, "intake_motor");
 
         hang = new HangComponent(hardwareMap, "hang_motor", "hang_servo");
+
+
+
+
     }
 
     @Override
     public void loop() {
         gamepad1Ex.readButtons();
         gamepad2Ex.readButtons();
+
+        if (cameraOn){sensor.isCentered();}
+
 
         // DRIVETRAIN
 
@@ -153,6 +170,20 @@ public class Teleop extends OpMode {
         }
         telemetry.addData("Heading", yaw);
         telemetry.addLine();
+
+        //OpenCV Sample Detection (red)
+        if (gamepad1Ex.wasJustPressed(PSButtons.CROSS) && !cameraOn){
+            sensor.switchToRed();
+            cameraOn = true;
+        }
+        else if (gamepad1Ex.wasJustPressed(PSButtons.SQUARE)&& !cameraOn){
+            sensor.switchToBlue();
+            cameraOn = true;
+        }else if(gamepad1Ex.wasJustPressed(PSButtons.CROSS) || gamepad1Ex.wasJustPressed(PSButtons.SQUARE) &&cameraOn) {
+            cameraOn = false;
+            sensor.stopStreaming();
+        }
+
 
         // VERTICAL SLIDE
 
