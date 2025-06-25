@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.util.inputs.PSButtons;
 public class IntakeTester extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        IntakeComponent intake = new IntakeComponent(hardwareMap, "intake_motor");
+        IntakeComponent intake = new IntakeComponent(hardwareMap, "intake_motor", "intake_servo");
         GamepadEx gamepad = new GamepadEx(gamepad1);
 
         waitForStart();

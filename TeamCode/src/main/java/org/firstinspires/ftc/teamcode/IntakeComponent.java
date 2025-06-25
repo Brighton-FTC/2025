@@ -2,13 +2,19 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class IntakeComponent {
     private Motor intakeMotor;
+
+    private final Servo intakeServo;
     private State state = State.STOPPED;
 
-    public IntakeComponent(HardwareMap hardwareMap, String intakeMotorId) {
+
+    public IntakeComponent(HardwareMap hardwareMap, String intakeMotorId, String intakeServoId) {
         intakeMotor = new Motor(hardwareMap, intakeMotorId);
+
+        intakeServo = hardwareMap.servo.get(intakeServoId);
     }
 
     public void run() {
@@ -34,4 +40,6 @@ public class IntakeComponent {
             this.power = power;
         }
     }
+
+    public void turnServo (double turnAmount){intakeServo.setPosition(turnAmount);}
 }
