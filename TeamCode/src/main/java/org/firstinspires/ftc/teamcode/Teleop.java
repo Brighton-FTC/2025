@@ -90,7 +90,7 @@ public class Teleop extends OpMode {
         ));
 
 
-        //sensor = new OpenCVComponent(hardwareMap, "Webcam 1", motors);
+        sensor = new OpenCVComponent(hardwareMap, "Webcam 1", motors);
 
 
         horizontalSlideMotor = new Motor(hardwareMap, "horizontal_slide_motor");
@@ -148,18 +148,10 @@ public class Teleop extends OpMode {
         telemetry.addData("Heading", yaw);
         telemetry.addLine();
 
-        //OpenCV Sample Detection (red)
-        //if (gamepad1Ex.wasJustPressed(PSButtons.CROSS) && !cameraOn){
-          //  sensor.switchToRed();
-            //cameraOn = true;
-        //}
-        //else if (gamepad1Ex.wasJustPressed(PSButtons.SQUARE)&& !cameraOn){
-          //  sensor.switchToBlue();
-            //cameraOn = true;
-       // }else if(gamepad1Ex.wasJustPressed(PSButtons.CROSS) || gamepad1Ex.wasJustPressed(PSButtons.SQUARE) &&cameraOn) {
-         //   cameraOn = false;
-           // sensor.stopStreaming();
-        //}
+        if (gamepad1Ex.wasJustPressed(PSButtons.SQUARE)) {
+            inputMultiplier *= -1;
+        }
+
 
 
         // VERTICAL SLIDE
@@ -237,18 +229,19 @@ public class Teleop extends OpMode {
 
         // horizontal slide
         // Check if above motor limit
-        if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_EXTENSION_LIMIT) {
-            horizontalSlideMotor.set(Range.clip(gamepad2Ex.getRightY() * 0.5, -1.0, 0)); // joystick up, or positive is extension
-        } else if (horizontalSlideMotor.getCurrentPosition() > HORIZONTAL_SLIDE_RETRACT_LIMIT) {
-            horizontalSlideMotor.set(Range.clip(gamepad2Ex.getRightY() * 0.5, 0, 1)); // joystick up, or positive is extension
-        } else {
-            horizontalSlideMotor.set(gamepad2Ex.getRightY() * 0.5); // joystick up, or positive is extension
+        if (horizontalSlideMotor.getCurrentPosition() > HORIZONTAL_SLIDE_EXTENSION_LIMIT && gamepad2Ex.getRightY() >0.2) {
+            horizontalSlideMotor.set(-1); // joystick up, or positive is extension
+        } else if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_RETRACT_LIMIT && gamepad2Ex.getRightY() < -0.2) {
+            horizontalSlideMotor.set(1); // joystick up, or positive is extension
+        }
+        else {
+            horizontalSlideMotor.set(0);
         }
 
         telemetry.addData("Horizontal Slide Pos", horizontalSlideMotor.getCurrentPosition());
         telemetry.addLine();
 
-        // INTAKE
+        // INTAKES
 
         // forward
         if (gamepad2Ex.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0) {
