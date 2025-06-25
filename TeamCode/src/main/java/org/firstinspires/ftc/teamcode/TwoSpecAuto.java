@@ -21,41 +21,44 @@ public class TwoSpecAuto extends LinearOpMode {
 
     double downTangent = Math.toRadians(270);
 
-    double Roriginal_x = 10;
+    double startX = 9;
     double subY = -40;
-    double loop_x = 42;
+    double loop_x = 41;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(Roriginal_x, startY, startHeading));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(startX, startY, startHeading));
+//        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(startX, subY, startHeading));
 
         LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
 
 
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
-        if (!grabber.isClosed()) {grabber.toggleClaw();}
+        grabber.grab();
 
-        Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .afterDisp(10, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
-                .afterDisp(0, linearSlide::score)
+        Action scoreSpec = new SequentialAction(new InstantAction(linearSlide::score), new SleepAction(0.15), new InstantAction(grabber::reset));
+
+        Action startToSub = drive.actionBuilder(new Pose2d(startX, startY, startHeading))
+                .afterDisp(0, linearSlide::up)
+                .splineToConstantHeading(new Vector2d(startX, subY), startHeading)
                 .build();
 
+        Vector2d collectSpec = new Vector2d(35, -50);
 
-        Action specCycleN = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
+        Action specCycleN = drive.actionBuilder(new Pose2d(startX, subY, startHeading))
                 .afterDisp(0, linearSlide::down)
-                .splineToSplineHeading(new Pose2d(loop_x,startY, downTangent), 0)
-                .afterDisp(0, grabber::toggleClaw)
+                .setTangent(downTangent)
+                .splineToLinearHeading(new Pose2d(35, startY-20, downTangent), downTangent)
+                .afterDisp(0, grabber::grab)
                 .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY, startHeading), 270)
-                .afterDisp(0, linearSlide::score)
+                .splineToSplineHeading(new Pose2d(startX+2, subY-1, startHeading), downTangent)
                 .build();
 
-        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x+2, startY, startHeading))
-                .afterDisp(0, linearSlide::down)
-                .afterDisp(0, grabber::toggleClaw)
-                .splineToConstantHeading(new Vector2d(loop_x,startY), startHeading)
+        Action scoreToPark = drive.actionBuilder(new Pose2d(startX +2, subY-1, startHeading))
+                .afterTime(0.5, grabber::reset)
+                .splineToConstantHeading(new Vector2d(loop_x,startY+2), startHeading)
+                .afterTime(0, linearSlide::down)
                 .build();
 
 
@@ -71,11 +74,8 @@ public class TwoSpecAuto extends LinearOpMode {
         }).start();
 
         Actions.runBlocking(startToSub);
-        Actions.runBlocking(new InstantAction(linearSlide::score));
-        Actions.runBlocking(new SleepAction(0.2));
-        Actions.runBlocking(new InstantAction(grabber::toggleClaw));
-        Actions.runBlocking(new SequentialAction(specCycleN, new InstantAction(grabber::toggleClaw), startToPark));
-
+        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, specCycleN, new InstantAction(linearSlide::score), scoreToPark));
+//        Actions.runBlocking(specCycleN);
 
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }

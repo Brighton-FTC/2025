@@ -24,6 +24,14 @@ public class GrabberTester extends OpMode {
         gamepad.readButtons();
 
         if (gamepad.wasJustPressed(PSButtons.SQUARE)) {
+            grabber.reset(); //open
+        }
+
+        if (gamepad.wasJustPressed(PSButtons.CROSS)) {
+            grabber.grab(); //close
+        }
+
+        if (gamepad.wasJustPressed(PSButtons.CIRCLE)) {
             grabber.toggleClaw();
         }
 
