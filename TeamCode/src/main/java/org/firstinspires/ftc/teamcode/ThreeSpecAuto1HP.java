@@ -90,7 +90,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
             }
         }).start();
 
-        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, specCycle1, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), cycle1, new InstantAction(grabber::grab), specCycle2, new InstantAction(grabber::reset), scoreToPark, new InstantAction(linearSlide::down)));
+        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, cycle1, specCycle2, new InstantAction(grabber::reset), specCycle1, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), new InstantAction(linearSlide::down), scoreToPark));
 
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }

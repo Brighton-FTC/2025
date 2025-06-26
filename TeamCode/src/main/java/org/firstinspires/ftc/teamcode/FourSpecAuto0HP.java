@@ -39,11 +39,11 @@ public class FourSpecAuto0HP extends LinearOpMode {
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
                 .afterDisp(10, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, subY-1), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x+1, subY-2, startHeading))
+        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x-1, subY-2, startHeading))
                 .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
@@ -53,7 +53,7 @@ public class FourSpecAuto0HP extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(loop_x+5, startY, downTangent), startHeading)
                 .build();
 
-        Action cycle2 = drive.actionBuilder(new Pose2d(Roriginal_x+2, subY-2, startHeading))
+        Action cycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, startHeading))
                 .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
@@ -63,7 +63,7 @@ public class FourSpecAuto0HP extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(loop_x+5, startY, downTangent), startHeading)
                 .build();
 
-        Action cycle3 = drive.actionBuilder(new Pose2d(Roriginal_x+3, subY-2, startHeading))
+        Action cycle3 = drive.actionBuilder(new Pose2d(loop_x, startY, startHeading))
                 .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
@@ -76,34 +76,54 @@ public class FourSpecAuto0HP extends LinearOpMode {
 
 
 
-        Action specCycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
+        Action specCycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY-1, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .setTangent(downTangent)
                 .splineToLinearHeading(new Pose2d(35, startY-20, downTangent), downTangent)
                 .afterDisp(0, grabber::grab)
                 .waitSeconds(1)
                 .afterTime(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+1, subY-2, startHeading), 270)
+                .splineToSplineHeading(new Pose2d(Roriginal_x-1, subY-2, startHeading), 270)
                 .build();
 
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY-2, startHeading), 270)
+                .splineToSplineHeading(new Pose2d(Roriginal_x-2, subY-2, startHeading), 270)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action specCycle3 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
-                .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+3, subY-2, startHeading), 270)
-                .afterDisp(0, linearSlide::score)
+        Action specCycle3 = drive.actionBuilder(new Pose2d(Roriginal_x-2, subY-2, startHeading))
+                .afterDisp(0, linearSlide::down)
+                .setTangent(downTangent)
+                .splineToLinearHeading(new Pose2d(35, startY-20, downTangent), downTangent)
+                .afterDisp(0, grabber::grab)
+                .waitSeconds(1)
+                .afterTime(0, linearSlide::up)
+                .splineToSplineHeading(new Pose2d(Roriginal_x-3, subY-2, startHeading), 270)
                 .build();
 
-        Action specCycle4 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
-                .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY-2, startHeading), 270)
-                .afterDisp(0, linearSlide::score)
+        Action specCycle4 = drive.actionBuilder(new Pose2d(Roriginal_x-3, subY-2, startHeading))
+                .afterDisp(0, linearSlide::down)
+                .setTangent(downTangent)
+                .splineToLinearHeading(new Pose2d(35, startY-20, downTangent), downTangent)
+                .afterDisp(0, grabber::grab)
+                .waitSeconds(1)
+                .afterTime(0, linearSlide::up)
+                .splineToSplineHeading(new Pose2d(Roriginal_x-4, subY-2, startHeading), 270)
                 .build();
+
+//        Action specCycle3 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
+//                .afterDisp(0, linearSlide::up)
+//                .splineToSplineHeading(new Pose2d(Roriginal_x+3, subY-2, startHeading), 270)
+//                .afterDisp(0, linearSlide::score)
+//                .build();
+
+//        Action specCycle4 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
+//                .afterDisp(0, linearSlide::up)
+//                .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY-2, startHeading), 270)
+//                .afterDisp(0, linearSlide::score)
+//                .build();
 
 
 
@@ -125,7 +145,7 @@ public class FourSpecAuto0HP extends LinearOpMode {
             }
         }).start();
 
-        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, specCycle1, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), cycle1, new InstantAction(grabber::grab), specCycle2, new InstantAction(grabber::reset), cycle2, new InstantAction(grabber::grab), specCycle3, new InstantAction(grabber::reset), cycle3, new InstantAction(grabber::grab), specCycle4, new InstantAction(grabber::reset), new InstantAction(linearSlide::down), scoreToPark));
+        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, specCycle1, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), cycle1, cycle2, cycle3, new InstantAction(grabber::grab), specCycle2, new InstantAction(grabber::reset), specCycle3, new InstantAction(grabber::reset), specCycle4, new InstantAction(grabber::reset), new InstantAction(linearSlide::down), scoreToPark));
 
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
