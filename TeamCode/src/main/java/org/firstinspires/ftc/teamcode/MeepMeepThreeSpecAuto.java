@@ -42,8 +42,8 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
         grabber.grab();
 
-        Action scoreSpec = new SequentialAction(new InstantAction(linearSlide::score), new SleepAction(0.15), new InstantAction(grabber::reset));
-        Action collectSpec = new SequentialAction(new InstantAction(linearSlide::up), new InstantAction(grabber::grab));
+        Action scoreSpec = new SequentialAction(new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset));
+        Action collectSpec = new SequentialAction(new InstantAction(grabber::grab), new SleepAction(0.3), new InstantAction(linearSlide::up));
 //
 //        Action startToSub = drive.actionBuilder(new Pose2d(startX, startY, UP))
 //                .afterDisp(0, linearSlide::up)
@@ -75,7 +75,7 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
         Action Spec2 = drive.actionBuilder(new Pose2d(startX, startY, UP))
                 .splineToConstantHeading(new Vector2d(scoreX, subY), UP) // score
                 .afterTime(0, scoreSpec)
-                .waitSeconds(1)
+                .waitSeconds(0.4)
                 .setTangent(Math.toRadians(315))
                 .splineToLinearHeading(new Pose2d(35, collectY, DOWN), DOWN)
                 .setTangent(UP)
@@ -97,7 +97,7 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(loop_x+27, -10), RIGHT)
                 .setTangent(DOWN)
                 .splineToSplineHeading(new Pose2d(loop_x+27, -55 , UP), DOWN)
-                .waitSeconds(1)
+                .waitSeconds(0.4)
                 .build();
 
         // SCORE THE 3 SPEC
@@ -107,20 +107,20 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
                 .setTangent(UP)
                 .splineToSplineHeading(new Pose2d(scoreX+8, subY, UP), UP) // score
                 .afterTime(0, scoreSpec)
-                .waitSeconds(1)
+                .waitSeconds(0.4)
                 .setTangent(Math.toRadians(315))
                 .splineToLinearHeading(new Pose2d(35, collectY, DOWN), DOWN)
                 .afterTime(0, collectSpec)
                 .setTangent(UP)
                 .splineToSplineHeading(new Pose2d(scoreX+12, subY, UP), UP) // score
                 .afterTime(0, scoreSpec)
-                .waitSeconds(1)
+                .waitSeconds(0.4)
                 .setTangent(Math.toRadians(315))
                 .splineToLinearHeading(new Pose2d(35, collectY, DOWN), DOWN)
                 .setTangent(UP)
                 .splineToSplineHeading(new Pose2d(scoreX+16, subY, UP), UP) // score
                 .afterTime(0, scoreSpec)
-                .waitSeconds(1)
+                .waitSeconds(0.4)
                 .build();
 
                 // PARK
