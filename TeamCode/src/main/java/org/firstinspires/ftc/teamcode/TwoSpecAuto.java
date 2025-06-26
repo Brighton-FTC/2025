@@ -55,7 +55,7 @@ public class TwoSpecAuto extends LinearOpMode {
                 .splineToSplineHeading(new Pose2d(startX+2, subY-2, startHeading), downTangent)
                 .build();
 
-        Action scoreToPark = drive.actionBuilder(new Pose2d(startX +2, subY-1, startHeading))
+        Action scoreToPark = drive.actionBuilder(new Pose2d(startX +2, subY-2, startHeading))
                 .splineToConstantHeading(new Vector2d(loop_x,startY+2), startHeading)
                 .build();
 
