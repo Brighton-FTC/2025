@@ -78,8 +78,12 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
                 .waitSeconds(0.4)
                 .setTangent(Math.toRadians(315))
                 .splineToLinearHeading(new Pose2d(35, collectY, DOWN), DOWN)
+                .afterTime(0, collectSpec)
+                .waitSeconds(0.4)
                 .setTangent(UP)
                 .splineToSplineHeading(new Pose2d(scoreX+4, subY, UP), UP) // score
+                .afterTime(0, scoreSpec)
+                .waitSeconds(0.4)
                 .build();
 
         // COLLECT THE 3 SAMPLES
@@ -104,6 +108,8 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
         Action Sample3Score = drive.actionBuilder(new Pose2d(loop_x+27, -55 , UP))
                 .setTangent(Math.toRadians(315))
                 .splineToLinearHeading(new Pose2d(35, collectY, DOWN), DOWN)
+                .afterTime(0, collectSpec)
+                .waitSeconds(0.4)
                 .setTangent(UP)
                 .splineToSplineHeading(new Pose2d(scoreX+8, subY, UP), UP) // score
                 .afterTime(0, scoreSpec)
@@ -111,12 +117,15 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
                 .setTangent(Math.toRadians(315))
                 .splineToLinearHeading(new Pose2d(35, collectY, DOWN), DOWN)
                 .afterTime(0, collectSpec)
+                .waitSeconds(0.4)
                 .setTangent(UP)
                 .splineToSplineHeading(new Pose2d(scoreX+12, subY, UP), UP) // score
                 .afterTime(0, scoreSpec)
                 .waitSeconds(0.4)
                 .setTangent(Math.toRadians(315))
                 .splineToLinearHeading(new Pose2d(35, collectY, DOWN), DOWN)
+                .afterTime(0, collectSpec)
+                .waitSeconds(0.4)
                 .setTangent(UP)
                 .splineToSplineHeading(new Pose2d(scoreX+16, subY, UP), UP) // score
                 .afterTime(0, scoreSpec)
