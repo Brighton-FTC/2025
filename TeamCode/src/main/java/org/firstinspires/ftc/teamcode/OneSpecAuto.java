@@ -19,7 +19,7 @@ public class OneSpecAuto extends LinearOpMode {
     double startHeading = Math.toRadians(90);
 
     double Roriginal_x = 10;
-    double subY = -40;
+    double subY = -41;
     double loop_x = 36;
 
     @Override
@@ -33,10 +33,10 @@ public class OneSpecAuto extends LinearOpMode {
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
                 .afterDisp(0, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, subY-3), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
                 .build();
 
-        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, subY-3, startHeading))
+        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .afterDisp(0, grabber::toggleClaw)
                 .splineToConstantHeading(new Vector2d(loop_x+10,startY), startHeading)
