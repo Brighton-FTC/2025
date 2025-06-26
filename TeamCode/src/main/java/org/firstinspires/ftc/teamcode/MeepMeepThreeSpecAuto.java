@@ -89,7 +89,7 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
         // COLLECT THE 3 SAMPLES
         Action Sample3Collect = drive.actionBuilder(new Pose2d(startX+2, subY, UP))
                 .setTangent(Math.toRadians(315))
-                .splineToConstantHeading(new Vector2d((loop_x + startX + 1) / 4 * 3, (-40 + subY -1) / 2), UP)
+                .splineToConstantHeading(new Vector2d((loop_x + startX + 1), (-40 + subY -1) / 2), UP)
                 .splineToConstantHeading(new Vector2d(loop_x, -10), UP)
                 .setTangent(sampCollectTangent)
                 .splineToConstantHeading(new Vector2d(loop_x+7, -55), UP)

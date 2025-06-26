@@ -111,7 +111,7 @@ public class MeepMeepTesting {
                         // COLLECT THE 3 SAMPLES
 
                         .setTangent(Math.toRadians(315))
-                        .splineToConstantHeading(new Vector2d((loop_x + scoreX + 1) / 4 * 3, (-40 + subY ) / 2), UP)
+                        .splineToConstantHeading(new Vector2d((loop_x + scoreX + 1), (-40 + subY ) / 2), UP)
                         .splineToConstantHeading(new Vector2d(loop_x, -10), UP)
                         .setTangent(sampCollectTangent)
                         .splineToConstantHeading(new Vector2d(loop_x+7, -55), UP)
