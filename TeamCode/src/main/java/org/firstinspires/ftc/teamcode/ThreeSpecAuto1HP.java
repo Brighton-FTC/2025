@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -34,46 +35,46 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
 
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
+        Action scoreSpec = new SequentialAction(new InstantAction(linearSlide::score), new SleepAction(0.15), new InstantAction(grabber::reset));
+
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
                 .afterDisp(10, linearSlide::up)
                 .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x+2, subY, startHeading))
+        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x+1, subY-2, startHeading))
+                .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
                 .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
+                .setTangent(Math.toRadians(320))
                 .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
-                .splineToSplineHeading(new Pose2d(loop_x+5, startY, downTangent), 90)
+                .splineToSplineHeading(new Pose2d(loop_x+5, startY, downTangent), startHeading)
                 .build();
 
 
 
-        Action specCycle1 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
-                .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+4, subY, startHeading), 0)
-                .afterDisp(0, linearSlide::score)
-                .build();
-
-        Action specCycle2 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
-                .afterTime(1, linearSlide::down)
-
-                .splineToSplineHeading(new Pose2d(loop_x+5,startY-24, downTangent), 0)
-
-                .afterDisp(0, grabber::toggleClaw)
-                .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY, startHeading), 270)
-
-                .afterDisp(0, linearSlide::score)
-                .build();
-
-
-        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x+4, subY, startHeading))
+        Action specCycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
                 .afterDisp(0, linearSlide::down)
-                .afterDisp(0, grabber::toggleClaw)
-                .splineToConstantHeading(new Vector2d(loop_x+5,startY), startHeading)
+                .setTangent(downTangent)
+                .splineToLinearHeading(new Pose2d(35, startY-20, downTangent), downTangent)
+                .afterDisp(0, grabber::grab)
+                .afterTime(1, linearSlide::up)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+1, subY-2, startHeading), downTangent)
+                .build();
 
+
+        Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
+                .afterDisp(0, linearSlide::up)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY-2, startHeading), downTangent)
+                .afterDisp(0, linearSlide::score)
+                .build();
+
+
+
+        Action scoreToPark = drive.actionBuilder(new Pose2d(Roriginal_x+2, subY-2, startHeading))
+                .splineToConstantHeading(new Vector2d(loop_x,startY+2), startHeading)
                 .build();
 
 
@@ -88,8 +89,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
             }
         }).start();
 
-        Actions.runBlocking(new SequentialAction(startToSub, new InstantAction(grabber::toggleClaw), specCycle2,new InstantAction(grabber::toggleClaw), cycle1, specCycle1, new InstantAction(grabber::toggleClaw), startToPark));
-
+        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, specCycle1, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), cycle1, new InstantAction(grabber::grab), specCycle2, new InstantAction(grabber::reset), scoreToPark, new InstantAction(linearSlide::down)));
 
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
