@@ -150,7 +150,7 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
             }
         }).start();
 
-        Actions.runBlocking(new SequentialAction(Spec2, Sample3Collect, Sample3Score, park));
+        Actions.runBlocking(new SequentialAction(Spec2, Sample3Collect, Sample3Score, new InstantAction(linearSlide::down), park));
 
 //        Actions.runBlocking(startToSub);
 //        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, specCycleN, new InstantAction(linearSlide::score), scoreToPark));

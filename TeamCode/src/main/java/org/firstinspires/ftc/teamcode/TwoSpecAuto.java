@@ -41,21 +41,22 @@ public class TwoSpecAuto extends LinearOpMode {
 
         Action startToSub = drive.actionBuilder(new Pose2d(startX, startY, startHeading))
                 .afterDisp(0, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(startX, subY), startHeading)
+                .splineToConstantHeading(new Vector2d(startX, subY-1), startHeading)
                 .build();
 
         Vector2d collectSpec = new Vector2d(35, -50);
 
-        Action specCycleN = drive.actionBuilder(new Pose2d(startX, subY, startHeading))
+        Action specCycleN = drive.actionBuilder(new Pose2d(startX, subY-1, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .setTangent(downTangent)
                 .splineToLinearHeading(new Pose2d(35, startY-20, downTangent), downTangent)
-                .afterDisp(0, grabber::grab)
+                .afterTime(0.5, grabber::grab)
                 .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(startX+2, subY-2, startHeading), downTangent)
+                .setTangent(startHeading)
+                .splineToSplineHeading(new Pose2d(startX-4, subY-3, startHeading), 270)
                 .build();
 
-        Action scoreToPark = drive.actionBuilder(new Pose2d(startX +2, subY-2, startHeading))
+        Action scoreToPark = drive.actionBuilder(new Pose2d(startX -2, subY-3, startHeading))
                 .splineToConstantHeading(new Vector2d(loop_x,startY+2), startHeading)
                 .build();
 
@@ -72,7 +73,7 @@ public class TwoSpecAuto extends LinearOpMode {
         }).start();
 
         Actions.runBlocking(startToSub);
-        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, specCycleN, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), scoreToPark, new InstantAction(linearSlide::down)));
+        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, specCycleN, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), new InstantAction(linearSlide::down), scoreToPark));
 //        Actions.runBlocking(specCycleN);
 
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());

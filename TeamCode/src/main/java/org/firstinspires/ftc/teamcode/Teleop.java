@@ -231,9 +231,9 @@ public class Teleop extends OpMode {
         double righty = -gamepad2Ex.getRightY();
         // horizontal slide
         // Check if above motor limit
-        if (horizontalSlideMotor.getCurrentPosition() > HORIZONTAL_SLIDE_EXTENSION_LIMIT && righty > -0.2) {
+        if (horizontalSlideMotor.getCurrentPosition() > HORIZONTAL_SLIDE_EXTENSION_LIMIT && righty > 0.2) {
             horizontalSlideMotor.set(-1); // joystick up, or positive is extension
-        } else if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_RETRACT_LIMIT && righty < 0.2) {
+        } else if (horizontalSlideMotor.getCurrentPosition() < HORIZONTAL_SLIDE_RETRACT_LIMIT && righty < -0.2) {
             horizontalSlideMotor.set(1); // joystick up, or positive is extension
         }
         else {

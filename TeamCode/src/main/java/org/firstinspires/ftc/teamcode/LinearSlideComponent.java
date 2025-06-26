@@ -34,7 +34,7 @@ public class LinearSlideComponent {
     public LinearSlideComponent(HardwareMap hardwareMap, String motorid, String touchSensorid) {
         slideMotor = new Motor(hardwareMap, motorid);
         touchSensor = hardwareMap.touchSensor.get(touchSensorid);
-        slideMotor.resetEncoder();
+
     }
 
     public void run() {

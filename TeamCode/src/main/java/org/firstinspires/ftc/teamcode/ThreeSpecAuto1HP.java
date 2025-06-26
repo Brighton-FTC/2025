@@ -39,11 +39,11 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
                 .afterDisp(10, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, subY-3), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x+1, subY-2, startHeading))
+        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x-1, subY-3, startHeading))
                 .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
@@ -55,25 +55,25 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
 
 
 
-        Action specCycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
+        Action specCycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY-3, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .setTangent(downTangent)
                 .splineToLinearHeading(new Pose2d(35, startY-20, downTangent), downTangent)
                 .afterDisp(0, grabber::grab)
                 .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+1, subY-2, startHeading), downTangent)
+                .splineToSplineHeading(new Pose2d(Roriginal_x-1, subY-3, startHeading), downTangent)
                 .build();
 
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY-2, startHeading), downTangent)
+                .splineToSplineHeading(new Pose2d(Roriginal_x-2, subY-3, startHeading), downTangent)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
 
 
-        Action scoreToPark = drive.actionBuilder(new Pose2d(Roriginal_x+2, subY-2, startHeading))
+        Action scoreToPark = drive.actionBuilder(new Pose2d(Roriginal_x-2, subY-2, startHeading))
                 .splineToConstantHeading(new Vector2d(loop_x,startY+2), startHeading)
                 .build();
 

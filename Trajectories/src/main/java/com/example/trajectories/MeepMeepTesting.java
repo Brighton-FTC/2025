@@ -1,5 +1,6 @@
 package com.example.trajectories;
 
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
@@ -97,8 +98,8 @@ public class MeepMeepTesting {
         // REMEMBER: setTanget changes tanget at start, tanget parameter changes tanget at end
 
         double sampCollectTangent = Math.toRadians(320);
-
-        // FIVE SPEC
+//
+//        // FIVE SPEC
         SpecBot.runAction(SpecBot.getDrive().actionBuilder(new Pose2d(startX, startY, UP))
                         .splineToConstantHeading(new Vector2d(scoreX, subY), UP) // score
                         .waitSeconds(1)
@@ -147,6 +148,13 @@ public class MeepMeepTesting {
                         .setTangent(DOWN)
                         .splineToConstantHeading(new Vector2d(loop_x,collectY-SPLINE_Y_OFFSET), DOWN) // park
                         .build());
+
+//        SpecBot.runAction(SpecBot.getDrive().actionBuilder(new Pose2d(startX, subY, UP))
+//                .setTangent(DOWN)
+//                .splineToLinearHeading(new Pose2d(35, startY-20, DOWN), DOWN)
+//                .setTangent(UP)
+//                .splineToSplineHeading(new Pose2d(startX-4, subY-2, UP), UP)
+//                .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
