@@ -25,7 +25,7 @@ public class MeepMeepThreeSpecAuto extends LinearOpMode {
 
     static double startX = 9;
     static double scoreX = -5;
-    static double subY = -31;
+    static double subY = -40;
     static double loop_x = 37;
 
     static double collectY = -67;

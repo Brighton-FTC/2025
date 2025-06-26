@@ -70,20 +70,21 @@ public class FourSpecAuto1HP extends LinearOpMode {
                 .setTangent(downTangent)
                 .splineToLinearHeading(new Pose2d(35, startY-20, downTangent), downTangent)
                 .afterDisp(0, grabber::grab)
-                .afterTime(1, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+1, subY-2, startHeading), downTangent)
+                .waitSeconds(1)
+                .afterTime(0, linearSlide::up)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+1, subY-2, startHeading), 270)
                 .build();
 
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY-2, startHeading), downTangent)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+2, subY-2, startHeading), 270)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
         Action specCycle3 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x+3, subY-2, startHeading), downTangent)
+                .splineToSplineHeading(new Pose2d(Roriginal_x+3, subY-2, startHeading), 270)
                 .afterDisp(0, linearSlide::score)
                 .build();
 

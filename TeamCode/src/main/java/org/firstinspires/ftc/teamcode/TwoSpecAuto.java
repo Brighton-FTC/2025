@@ -50,9 +50,9 @@ public class TwoSpecAuto extends LinearOpMode {
                 .afterDisp(0, linearSlide::down)
                 .setTangent(downTangent)
                 .splineToLinearHeading(new Pose2d(35, startY-20, downTangent), downTangent)
-                .afterDisp(0, grabber::grab)
-                .waitSeconds(0.5)
-                .afterTime(1, linearSlide::up)
+                .afterTime(0, grabber::grab)
+                .waitSeconds(1)
+                .afterTime(0, linearSlide::up)
                 .setTangent(startHeading)
                 .splineToSplineHeading(new Pose2d(startX-4, subY-3, startHeading), 270)
                 .build();
