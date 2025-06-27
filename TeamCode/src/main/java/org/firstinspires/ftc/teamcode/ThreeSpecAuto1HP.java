@@ -39,9 +39,9 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
         Action scoreSpec = new SequentialAction(new InstantAction(linearSlide::score), new SleepAction(0.15), new InstantAction(grabber::reset));
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .afterDisp(0, linearSlide::up)
+                .afterTime(0, linearSlide::up)
                 .splineToConstantHeading(new Vector2d(Roriginal_x, subY-1), startHeading)
-                .afterDisp(0, linearSlide::score)
+                .afterTime(0, linearSlide::score)
                 .build();
 
         Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY-1, startHeading))
@@ -73,10 +73,10 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
 
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
-                .afterDisp(0, linearSlide::up)
+                .afterTime(0, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x-2, subY-10, startHeading), 270)
                 .splineToConstantHeading(new Vector2d(Roriginal_x-2, subY-1), startHeading)
-                .afterDisp(0, linearSlide::score)
+                .afterTime(0, linearSlide::score)
                 .build();
 
 
