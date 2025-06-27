@@ -70,7 +70,8 @@ public class TwoSpecAuto0HP extends LinearOpMode {
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x-2, subY-3, startHeading), 270)
+                .splineToSplineHeading(new Pose2d(Roriginal_x-2, subY-10, startHeading), 270)
+                .splineTo(new Vector2d(Roriginal_x-2, subY-3), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
 //        Action specCycleN = drive.actionBuilder(new Pose2d(Roriginal_x, subY-1, startHeading))

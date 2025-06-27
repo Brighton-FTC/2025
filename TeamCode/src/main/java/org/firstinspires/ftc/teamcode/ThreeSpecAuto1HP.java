@@ -46,7 +46,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
         Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x-1, subY, startHeading))
                 .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
-                .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
+                .splineToSplineHeading(new Pose2d(loop_x+11, -48, startHeading), downTangent)
                 .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
                 .setTangent(Math.toRadians(320))
                 .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
@@ -62,19 +62,21 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
                 .afterDisp(0, grabber::grab)
                 .waitSeconds(1)
                 .afterTime(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x-1, subY-3, startHeading), 270)
+                .splineToSplineHeading(new Pose2d(Roriginal_x-1, subY-10, startHeading), 270)
+                .splineToConstantHeading(new Vector2d(Roriginal_x-1, subY-3), startHeading)
                 .build();
 
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
-                .splineToSplineHeading(new Pose2d(Roriginal_x-2, subY-3, startHeading), 270)
+                .splineToSplineHeading(new Pose2d(Roriginal_x-2, subY-10, startHeading), 270)
+                .splineToConstantHeading(new Vector2d(Roriginal_x-2, subY-3), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
 
 
-        Action scoreToPark = drive.actionBuilder(new Pose2d(Roriginal_x-2, subY-2, startHeading))
+        Action scoreToPark = drive.actionBuilder(new Pose2d(Roriginal_x-2, subY-3, startHeading))
                 .splineToConstantHeading(new Vector2d(loop_x,startY+2), startHeading)
                 .build();
 
@@ -90,7 +92,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
             }
         }).start();
 
-        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, cycle1, specCycle2, new InstantAction(grabber::reset), specCycle1, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), new InstantAction(linearSlide::down), scoreToPark));
+        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, cycle1, new InstantAction(grabber::grab), specCycle2, new InstantAction(grabber::reset), specCycle1, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), new InstantAction(linearSlide::down), scoreToPark));
 
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }
