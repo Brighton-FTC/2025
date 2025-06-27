@@ -31,12 +31,14 @@ public class OneSpecAuto extends LinearOpMode {
 
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
+        linearSlide.resetSlideEncoder();
+
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY-2, startHeading))
                 .afterDisp(0, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, subY-1), startHeading)
                 .build();
 
-        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
+        Action startToPark = drive.actionBuilder(new Pose2d(Roriginal_x, subY-1, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .afterDisp(0, grabber::toggleClaw)
                 .splineToConstantHeading(new Vector2d(loop_x+10,startY), startHeading)

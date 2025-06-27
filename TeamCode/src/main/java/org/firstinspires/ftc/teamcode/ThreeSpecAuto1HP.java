@@ -32,6 +32,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
 
         LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
 
+        linearSlide.resetSlideEncoder();
 
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
@@ -39,14 +40,14 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
                 .afterDisp(0, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, subY-1), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
-        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x-1, subY, startHeading))
+        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY-1, startHeading))
                 .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
-                .splineToSplineHeading(new Pose2d(loop_x+11, -48, startHeading), downTangent)
+                .splineToConstantHeading(new Vector2d(loop_x+11, -48), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
                 .setTangent(Math.toRadians(320))
                 .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
@@ -55,7 +56,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
 
 
 
-        Action specCycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY-3, startHeading))
+        Action specCycle1 = drive.actionBuilder(new Pose2d(Roriginal_x-2, subY-2, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .setTangent(downTangent)
                 .splineToLinearHeading(new Pose2d(35, startY-22, downTangent), downTangent)
@@ -63,20 +64,20 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
                 .waitSeconds(1)
                 .afterTime(0, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x-1, subY-10, startHeading), 270)
-                .splineToConstantHeading(new Vector2d(Roriginal_x-1, subY-3), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x-4, subY-2), startHeading)
                 .build();
 
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x-2, subY-10, startHeading), 270)
-                .splineToConstantHeading(new Vector2d(Roriginal_x-2, subY-3), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x-2, subY-2), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
 
 
-        Action scoreToPark = drive.actionBuilder(new Pose2d(Roriginal_x-2, subY-3, startHeading))
+        Action scoreToPark = drive.actionBuilder(new Pose2d(Roriginal_x-4, subY-2, startHeading))
                 .splineToConstantHeading(new Vector2d(loop_x,startY+2), startHeading)
                 .build();
 
@@ -92,7 +93,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
             }
         }).start();
 
-        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, cycle1, new InstantAction(grabber::grab), specCycle2, new InstantAction(grabber::reset), specCycle1, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), new InstantAction(linearSlide::down), scoreToPark));
+        Actions.runBlocking(new SequentialAction(startToSub, scoreSpec, cycle1, new InstantAction(grabber::grab), new SleepAction(0.5), specCycle2, new InstantAction(grabber::reset), specCycle1, new InstantAction(linearSlide::score), new SleepAction(0.2), new InstantAction(grabber::reset), new InstantAction(linearSlide::down), scoreToPark));
 
 //        GeneralTeleop.setHeadingOffset(drive.lazyImu.get().getRobotYawPitchRollAngles().getYaw());
     }

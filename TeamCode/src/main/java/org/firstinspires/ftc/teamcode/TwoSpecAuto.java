@@ -33,6 +33,8 @@ public class TwoSpecAuto extends LinearOpMode {
 
         LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
 
+        linearSlide.resetSlideEncoder();
+
 
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
         grabber.grab();

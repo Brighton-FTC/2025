@@ -78,6 +78,10 @@ public class LinearSlideComponent {
         this.input = input;
     }
 
+    public void resetSlideEncoder(){
+        slideMotor.resetEncoder();
+    }
+
     public Motor getMotor() {
         return slideMotor;
     }

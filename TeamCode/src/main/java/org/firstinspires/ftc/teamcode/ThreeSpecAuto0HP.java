@@ -33,7 +33,10 @@ public class ThreeSpecAuto0HP extends LinearOpMode {
         LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
 
 
+
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
+
+        linearSlide.resetSlideEncoder();
 
         Action scoreSpec = new SequentialAction(new InstantAction(linearSlide::score), new SleepAction(0.15), new InstantAction(grabber::reset));
 
