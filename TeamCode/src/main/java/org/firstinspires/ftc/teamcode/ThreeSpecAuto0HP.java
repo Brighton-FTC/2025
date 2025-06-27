@@ -50,9 +50,9 @@ public class ThreeSpecAuto0HP extends LinearOpMode {
                 .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
-                .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 10, -19), startHeading)
                 .setTangent(Math.toRadians(320))
-                .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 14, -60), startHeading)
                 .splineToSplineHeading(new Pose2d(loop_x+5, startY, downTangent), startHeading)
                 .build();
 
