@@ -63,6 +63,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
                 .afterDisp(0, grabber::grab)
                 .waitSeconds(0.3)
                 .afterTime(0, linearSlide::up)
+                .waitSeconds(0.3)
                 .splineToSplineHeading(new Pose2d(Roriginal_x-1, subY-10, startHeading), 270)
                 .splineToConstantHeading(new Vector2d(Roriginal_x-5, subY-2), startHeading)
                 .build();
