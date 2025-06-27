@@ -46,7 +46,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
 
         Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY-1, startHeading))
                 .setTangent(Math.toRadians(315))
-                .afterDisp(0, linearSlide::down)
+                .afterTime(0, linearSlide::down)
                 .waitSeconds(0.3)
                 .splineToConstantHeading(new Vector2d(loop_x+10, -48), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x + 10, -19), startHeading)
