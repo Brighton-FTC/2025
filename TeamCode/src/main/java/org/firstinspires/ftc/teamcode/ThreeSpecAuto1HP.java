@@ -59,11 +59,11 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
 
 
         Action specCycle1 = drive.actionBuilder(new Pose2d(Roriginal_x-2, subY-2, startHeading))
-                .afterDisp(0, linearSlide::down)
+                .afterTime(0, linearSlide::down)
                 .waitSeconds(0.3)
                 .setTangent(downTangent)
                 .splineToLinearHeading(new Pose2d(35, startY-21.7, downTangent), downTangent)
-                .afterDisp(0, grabber::grab)
+                .afterTime(0, grabber::grab)
                 .waitSeconds(0.5)
                 .afterTime(0, linearSlide::up2)
                 .waitSeconds(0.3)
