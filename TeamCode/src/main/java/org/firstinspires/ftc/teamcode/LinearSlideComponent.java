@@ -17,6 +17,8 @@ public class LinearSlideComponent {
 
     public static double UP_POSITION = 2000;
 
+    public static double UP_POSITION2 = 2200;
+
     public static double DOWN_POSITION = 0;
 
     public static double SCORE_POSITION = 1500;
@@ -62,6 +64,10 @@ public class LinearSlideComponent {
     public void up() {
         isrunningPID = true;
         controller.setSetPoint(UP_POSITION);
+    }
+    public void up2() {
+        isrunningPID = true;
+        controller.setSetPoint(UP_POSITION2);
     }
 
     public void down() {

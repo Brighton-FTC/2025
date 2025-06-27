@@ -50,7 +50,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(loop_x+10, -48), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x + 10, -19), startHeading)
                 .setTangent(Math.toRadians(320))
-                .splineToConstantHeading(new Vector2d(loop_x + 17, -60), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 22, -60), startHeading)
                 .splineToSplineHeading(new Pose2d(loop_x+5, startY-22, downTangent), startHeading)
                 .build();
 
@@ -59,10 +59,10 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
         Action specCycle1 = drive.actionBuilder(new Pose2d(Roriginal_x-2, subY-2, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .setTangent(downTangent)
-                .splineToLinearHeading(new Pose2d(35, startY-21.5, downTangent), downTangent)
+                .splineToLinearHeading(new Pose2d(35, startY-21.7, downTangent), downTangent)
                 .afterDisp(0, grabber::grab)
-                .waitSeconds(0.3)
-                .afterTime(0, linearSlide::up)
+                .waitSeconds(0.5)
+                .afterTime(0, linearSlide::up2)
                 .waitSeconds(0.3)
                 .splineToSplineHeading(new Pose2d(Roriginal_x-1, subY-10, startHeading), 270)
                 .splineToConstantHeading(new Vector2d(Roriginal_x-5, subY-2), startHeading)
