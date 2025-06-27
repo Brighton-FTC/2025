@@ -48,9 +48,9 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
                 .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
                 .splineToConstantHeading(new Vector2d(loop_x+11, -48), startHeading)
-                .splineToConstantHeading(new Vector2d(loop_x + 11, -19), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 10, -19), startHeading)
                 .setTangent(Math.toRadians(320))
-                .splineToConstantHeading(new Vector2d(loop_x + 13, -60), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 15, -60), startHeading)
                 .splineToSplineHeading(new Pose2d(loop_x+5, startY-22, downTangent), startHeading)
                 .build();
 
@@ -71,14 +71,14 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
         Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
                 .afterDisp(0, linearSlide::up)
                 .splineToSplineHeading(new Pose2d(Roriginal_x-2, subY-10, startHeading), 270)
-                .splineToConstantHeading(new Vector2d(Roriginal_x-2, subY-2), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x-2, subY-1), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
 
 
 
         Action scoreToPark = drive.actionBuilder(new Pose2d(Roriginal_x-4, subY-2, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x,startY+2), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+5,startY+1), startHeading)
                 .build();
 
 

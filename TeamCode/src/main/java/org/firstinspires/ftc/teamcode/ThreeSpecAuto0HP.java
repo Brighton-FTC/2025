@@ -98,7 +98,7 @@ public class ThreeSpecAuto0HP extends LinearOpMode {
 
 
         Action scoreToPark = drive.actionBuilder(new Pose2d(Roriginal_x+3, subY-2, startHeading))
-                .splineToConstantHeading(new Vector2d(loop_x,startY+2), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x+5,startY+1), startHeading)
                 .build();
 
 
