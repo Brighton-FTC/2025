@@ -50,7 +50,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(loop_x+10, -48), startHeading)
                 .splineToConstantHeading(new Vector2d(loop_x + 10, -19), startHeading)
                 .setTangent(Math.toRadians(320))
-                .splineToConstantHeading(new Vector2d(loop_x + 22, -60), startHeading)
+                .splineToConstantHeading(new Vector2d(loop_x + 24, -60), startHeading)
                 .splineToSplineHeading(new Pose2d(loop_x+5, startY-22, downTangent), startHeading)
                 .build();
 
