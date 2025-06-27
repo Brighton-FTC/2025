@@ -38,7 +38,7 @@ public class ThreeSpecAuto1HP extends LinearOpMode {
         Action scoreSpec = new SequentialAction(new InstantAction(linearSlide::score), new SleepAction(0.15), new InstantAction(grabber::reset));
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
-                .afterDisp(10, linearSlide::up)
+                .afterDisp(0, linearSlide::up)
                 .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
                 .afterDisp(0, linearSlide::score)
                 .build();
