@@ -42,7 +42,7 @@ public class TwoSpecAuto0HP extends LinearOpMode {
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
         grabber.grab();
 
-        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY-1, startHeading))
+        Action cycle1 = drive.actionBuilder(new Pose2d(Roriginal_x, subY, startHeading))
                 .setTangent(Math.toRadians(315))
                 .afterDisp(0, linearSlide::down)
                 .splineToSplineHeading(new Pose2d(Roriginal_x, -48, startHeading), downTangent)
@@ -65,7 +65,7 @@ public class TwoSpecAuto0HP extends LinearOpMode {
 
         Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
                 .afterDisp(0, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(Roriginal_x, subY-1), startHeading)
+                .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
                 .build();
 
         Action specCycle2 = drive.actionBuilder(new Pose2d(loop_x+5, startY, downTangent))
