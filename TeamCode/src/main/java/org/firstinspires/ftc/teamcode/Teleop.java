@@ -52,7 +52,7 @@ public class Teleop extends OpMode {
     private IMU imu;
 
     public static final int HORIZONTAL_SLIDE_EXTENSION_LIMIT = -750;
-    public static final int HORIZONTAL_SLIDE_RETRACT_LIMIT = 50;
+    public static final int HORIZONTAL_SLIDE_RETRACT_LIMIT = 200;
     public static final int VERTICAL_SLIDE_UPPER_LIMIT = 2000;
     public static final int VERTICAL_SLIDE_LOWER_LIMIT = 250;
 

@@ -24,14 +24,14 @@ public class OneSpecAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(Roriginal_x, startY, startHeading));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(Roriginal_x, startY-2, startHeading));
 
         LinearSlideComponent linearSlide = new LinearSlideComponent(hardwareMap, "vertical_slide_motor", "vertical_slide_sensor");
 
 
         GrabberComponent grabber = new GrabberComponent(hardwareMap, "claw_servo");
 
-        Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY, startHeading))
+        Action startToSub = drive.actionBuilder(new Pose2d(Roriginal_x, startY-2, startHeading))
                 .afterDisp(0, linearSlide::up)
                 .splineToConstantHeading(new Vector2d(Roriginal_x, subY), startHeading)
                 .build();

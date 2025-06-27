@@ -41,12 +41,12 @@ public class TwoSpecAuto extends LinearOpMode {
 
         Action startToSub = drive.actionBuilder(new Pose2d(startX, startY, startHeading))
                 .afterDisp(0, linearSlide::up)
-                .splineToConstantHeading(new Vector2d(startX, subY), startHeading)
+                .splineToConstantHeading(new Vector2d(startX, subY-1), startHeading)
                 .build();
 
         Vector2d collectSpec = new Vector2d(35, -50);
 
-        Action specCycleN = drive.actionBuilder(new Pose2d(startX, subY, startHeading))
+        Action specCycleN = drive.actionBuilder(new Pose2d(startX, subY-1, startHeading))
                 .afterDisp(0, linearSlide::down)
                 .setTangent(downTangent)
                 .splineToLinearHeading(new Pose2d(35, startY-22, downTangent), downTangent)
